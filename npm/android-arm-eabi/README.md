@@ -1,3 +1,3 @@
-# `@napi-rs/package-template-android-arm-eabi`
+# `@svg-rs/svgo-android-arm-eabi`
 
-This is the **armv7-linux-androideabi** binary for `@napi-rs/package-template`
+This is the **armv7-linux-androideabi** binary for `@svg-rs/svgo`
