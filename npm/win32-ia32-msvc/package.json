@@ -7,11 +7,11 @@
   "cpu": [
     "ia32"
   ],
-  "main": "@svg-rs/svgo.win32-ia32-msvc.node",
+  "main": "svgo-rs.win32-ia32-msvc.node",
   "files": [
-    "@svg-rs/svgo.win32-ia32-msvc.node"
+    "svgo-rs.win32-ia32-msvc.node"
   ],
-  "description": "Template project for writing node package with napi-rs",
+  "description": "Node.js tool for optimizing SVG files by Rust.",
   "keywords": [
     "napi-rs",
     "NAPI",

@@ -1,5 +1,5 @@
-use crate::xml_ast::{XmlElement, XmlNode};
 use crate::plugin_pipeline::XmlPlugin;
+use crate::xml_ast::{XmlElement, XmlNode};
 
 pub struct UppercaseIdPlugin;
 

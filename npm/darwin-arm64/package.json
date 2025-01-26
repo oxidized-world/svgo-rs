@@ -7,11 +7,11 @@
   "cpu": [
     "arm64"
   ],
-  "main": "@svg-rs/svgo.darwin-arm64.node",
+  "main": "svgo-rs.darwin-arm64.node",
   "files": [
-    "@svg-rs/svgo.darwin-arm64.node"
+    "svgo-rs.darwin-arm64.node"
   ],
-  "description": "Template project for writing node package with napi-rs",
+  "description": "Node.js tool for optimizing SVG files by Rust.",
   "keywords": [
     "napi-rs",
     "NAPI",

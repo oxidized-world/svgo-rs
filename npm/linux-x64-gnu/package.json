@@ -7,11 +7,11 @@
   "cpu": [
     "x64"
   ],
-  "main": "@svg-rs/svgo.linux-x64-gnu.node",
+  "main": "svgo-rs.linux-x64-gnu.node",
   "files": [
-    "@svg-rs/svgo.linux-x64-gnu.node"
+    "svgo-rs.linux-x64-gnu.node"
   ],
-  "description": "Template project for writing node package with napi-rs",
+  "description": "Node.js tool for optimizing SVG files by Rust.",
   "keywords": [
     "napi-rs",
     "NAPI",

@@ -7,11 +7,11 @@
   "cpu": [
     "arm"
   ],
-  "main": "@svg-rs/svgo.android-arm-eabi.node",
+  "main": "svgo-rs.android-arm-eabi.node",
   "files": [
-    "@svg-rs/svgo.android-arm-eabi.node"
+    "svgo-rs.android-arm-eabi.node"
   ],
-  "description": "Template project for writing node package with napi-rs",
+  "description": "Node.js tool for optimizing SVG files by Rust.",
   "keywords": [
     "napi-rs",
     "NAPI",
