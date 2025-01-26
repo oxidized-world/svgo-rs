@@ -36,6 +36,10 @@ switch (platform) {
         try {
           if (localFileExisted) {
             nativeBinding = require('./@svg-rs/svgo.android-arm64.node')
+        localFileExisted = existsSync(join(__dirname, 'svgo.android-arm64.node'))
+        try {
+          if (localFileExisted) {
+            nativeBinding = require('./svgo.android-arm64.node')
           } else {
             nativeBinding = require('@svg-rs/svgo-android-arm64')
           }
@@ -48,6 +52,10 @@ switch (platform) {
         try {
           if (localFileExisted) {
             nativeBinding = require('./@svg-rs/svgo.android-arm-eabi.node')
+        localFileExisted = existsSync(join(__dirname, 'svgo.android-arm-eabi.node'))
+        try {
+          if (localFileExisted) {
+            nativeBinding = require('./svgo.android-arm-eabi.node')
           } else {
             nativeBinding = require('@svg-rs/svgo-android-arm-eabi')
           }
@@ -68,6 +76,11 @@ switch (platform) {
         try {
           if (localFileExisted) {
             nativeBinding = require('./@svg-rs/svgo.win32-x64-msvc.node')
+          join(__dirname, 'svgo.win32-x64-msvc.node')
+        )
+        try {
+          if (localFileExisted) {
+            nativeBinding = require('./svgo.win32-x64-msvc.node')
           } else {
             nativeBinding = require('@svg-rs/svgo-win32-x64-msvc')
           }
@@ -82,6 +95,11 @@ switch (platform) {
         try {
           if (localFileExisted) {
             nativeBinding = require('./@svg-rs/svgo.win32-ia32-msvc.node')
+          join(__dirname, 'svgo.win32-ia32-msvc.node')
+        )
+        try {
+          if (localFileExisted) {
+            nativeBinding = require('./svgo.win32-ia32-msvc.node')
           } else {
             nativeBinding = require('@svg-rs/svgo-win32-ia32-msvc')
           }
@@ -96,6 +114,11 @@ switch (platform) {
         try {
           if (localFileExisted) {
             nativeBinding = require('./@svg-rs/svgo.win32-arm64-msvc.node')
+          join(__dirname, 'svgo.win32-arm64-msvc.node')
+        )
+        try {
+          if (localFileExisted) {
+            nativeBinding = require('./svgo.win32-arm64-msvc.node')
           } else {
             nativeBinding = require('@svg-rs/svgo-win32-arm64-msvc')
           }
@@ -112,6 +135,10 @@ switch (platform) {
     try {
       if (localFileExisted) {
         nativeBinding = require('./@svg-rs/svgo.darwin-universal.node')
+    localFileExisted = existsSync(join(__dirname, 'svgo.darwin-universal.node'))
+    try {
+      if (localFileExisted) {
+        nativeBinding = require('./svgo.darwin-universal.node')
       } else {
         nativeBinding = require('@svg-rs/svgo-darwin-universal')
       }
@@ -123,6 +150,10 @@ switch (platform) {
         try {
           if (localFileExisted) {
             nativeBinding = require('./@svg-rs/svgo.darwin-x64.node')
+        localFileExisted = existsSync(join(__dirname, 'svgo.darwin-x64.node'))
+        try {
+          if (localFileExisted) {
+            nativeBinding = require('./svgo.darwin-x64.node')
           } else {
             nativeBinding = require('@svg-rs/svgo-darwin-x64')
           }
@@ -137,6 +168,11 @@ switch (platform) {
         try {
           if (localFileExisted) {
             nativeBinding = require('./@svg-rs/svgo.darwin-arm64.node')
+          join(__dirname, 'svgo.darwin-arm64.node')
+        )
+        try {
+          if (localFileExisted) {
+            nativeBinding = require('./svgo.darwin-arm64.node')
           } else {
             nativeBinding = require('@svg-rs/svgo-darwin-arm64')
           }
@@ -156,6 +192,10 @@ switch (platform) {
     try {
       if (localFileExisted) {
         nativeBinding = require('./@svg-rs/svgo.freebsd-x64.node')
+    localFileExisted = existsSync(join(__dirname, 'svgo.freebsd-x64.node'))
+    try {
+      if (localFileExisted) {
+        nativeBinding = require('./svgo.freebsd-x64.node')
       } else {
         nativeBinding = require('@svg-rs/svgo-freebsd-x64')
       }
@@ -173,6 +213,11 @@ switch (platform) {
           try {
             if (localFileExisted) {
               nativeBinding = require('./@svg-rs/svgo.linux-x64-musl.node')
+            join(__dirname, 'svgo.linux-x64-musl.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./svgo.linux-x64-musl.node')
             } else {
               nativeBinding = require('@svg-rs/svgo-linux-x64-musl')
             }
@@ -186,6 +231,11 @@ switch (platform) {
           try {
             if (localFileExisted) {
               nativeBinding = require('./@svg-rs/svgo.linux-x64-gnu.node')
+            join(__dirname, 'svgo.linux-x64-gnu.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./svgo.linux-x64-gnu.node')
             } else {
               nativeBinding = require('@svg-rs/svgo-linux-x64-gnu')
             }
@@ -202,6 +252,11 @@ switch (platform) {
           try {
             if (localFileExisted) {
               nativeBinding = require('./@svg-rs/svgo.linux-arm64-musl.node')
+            join(__dirname, 'svgo.linux-arm64-musl.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./svgo.linux-arm64-musl.node')
             } else {
               nativeBinding = require('@svg-rs/svgo-linux-arm64-musl')
             }
@@ -215,6 +270,11 @@ switch (platform) {
           try {
             if (localFileExisted) {
               nativeBinding = require('./@svg-rs/svgo.linux-arm64-gnu.node')
+            join(__dirname, 'svgo.linux-arm64-gnu.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./svgo.linux-arm64-gnu.node')
             } else {
               nativeBinding = require('@svg-rs/svgo-linux-arm64-gnu')
             }
@@ -231,6 +291,11 @@ switch (platform) {
           try {
             if (localFileExisted) {
               nativeBinding = require('./@svg-rs/svgo.linux-arm-musleabihf.node')
+            join(__dirname, 'svgo.linux-arm-musleabihf.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./svgo.linux-arm-musleabihf.node')
             } else {
               nativeBinding = require('@svg-rs/svgo-linux-arm-musleabihf')
             }
@@ -244,6 +309,11 @@ switch (platform) {
           try {
             if (localFileExisted) {
               nativeBinding = require('./@svg-rs/svgo.linux-arm-gnueabihf.node')
+            join(__dirname, 'svgo.linux-arm-gnueabihf.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./svgo.linux-arm-gnueabihf.node')
             } else {
               nativeBinding = require('@svg-rs/svgo-linux-arm-gnueabihf')
             }
@@ -260,6 +330,11 @@ switch (platform) {
           try {
             if (localFileExisted) {
               nativeBinding = require('./@svg-rs/svgo.linux-riscv64-musl.node')
+            join(__dirname, 'svgo.linux-riscv64-musl.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./svgo.linux-riscv64-musl.node')
             } else {
               nativeBinding = require('@svg-rs/svgo-linux-riscv64-musl')
             }
@@ -273,6 +348,11 @@ switch (platform) {
           try {
             if (localFileExisted) {
               nativeBinding = require('./@svg-rs/svgo.linux-riscv64-gnu.node')
+            join(__dirname, 'svgo.linux-riscv64-gnu.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./svgo.linux-riscv64-gnu.node')
             } else {
               nativeBinding = require('@svg-rs/svgo-linux-riscv64-gnu')
             }
@@ -288,6 +368,11 @@ switch (platform) {
         try {
           if (localFileExisted) {
             nativeBinding = require('./@svg-rs/svgo.linux-s390x-gnu.node')
+          join(__dirname, 'svgo.linux-s390x-gnu.node')
+        )
+        try {
+          if (localFileExisted) {
+            nativeBinding = require('./svgo.linux-s390x-gnu.node')
           } else {
             nativeBinding = require('@svg-rs/svgo-linux-s390x-gnu')
           }
@@ -313,3 +398,6 @@ if (!nativeBinding) {
 const { plus100 } = nativeBinding
 
 module.exports.plus100 = plus100
+const { main } = nativeBinding
+
+module.exports.main = main
