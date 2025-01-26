@@ -10,9 +10,7 @@ mod plugins;
 mod xml_ast;
 
 #[napi]
-pub fn plus_100(input: u32) -> u32 {
-  input + 100
-pub fn main() -> () {
+pub fn main() -> String {
   let input_xml = r#"
       <div class="container" id="main">
           <p class="text">Hello World</p>
@@ -26,7 +24,7 @@ pub fn main() -> () {
 
   let output = pipeline.process(input_xml);
   match output {
-    Ok(output) => println!("Processed XML:\n{}", output),
-    Err(err) => println!("Error: {}", err),
+    Ok(output) => return output,
+    Err(err) => return err.to_string(),
   }
 }

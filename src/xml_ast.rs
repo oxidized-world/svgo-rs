@@ -70,18 +70,19 @@ pub fn serialize_xml(element: &XmlElement) -> Result<String, Box<dyn std::error:
     element: &XmlElement,
     emitter: &mut EventWriter<W>,
   ) -> Result<(), Box<dyn std::error::Error>> {
-    // 创建基础元素构建器
-    let mut element_builder = WriteEvent::start_element(Name::local(&element.name));
+    // 创建带有名称的开始元素
+    let start = WriteEvent::start_element(Name::local(&element.name));
 
-    // 添加属性（使用单独的 attr 方法）
+    // 添加属性（使用新的 API 方式）
+    let mut start_with_attrs = start;
     for (k, v) in &element.attributes {
-      element_builder = element_builder.attr(Name::local(k), v.as_str());
+      start_with_attrs = start_with_attrs.attr(Name::local(k), v);
     }
 
     // 写入开始标签
-    emitter.write(element_builder)?;
+    emitter.write(start_with_attrs)?;
 
-    // 处理子节点
+    // 递归处理子节点
     for child in &element.children {
       match child {
         XmlNode::Element(e) => write_element(e, emitter)?,
@@ -89,18 +90,10 @@ pub fn serialize_xml(element: &XmlElement) -> Result<String, Box<dyn std::error:
       }
     }
 
-    // 写入结束标签
-    emitter.write(WriteEvent::end_element())?;
-    // emitter.write(WriteEvent::start_element(name).attributes(attributes))?;
+    // 创建结束标签
+    let end_name = Name::local(&element.name);
+    emitter.write(WriteEvent::end_element().name(end_name))?;
 
-    for child in &element.children {
-      match child {
-        XmlNode::Element(e) => write_element(e, emitter)?,
-        XmlNode::Text(t) => emitter.write(WriteEvent::characters(t))?,
-      }
-    }
-
-    emitter.write(WriteEvent::end_element())?;
     Ok(())
   }
 
