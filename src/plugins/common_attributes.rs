@@ -32,13 +32,11 @@ impl super::Plugin for CommonAttributesPlugin {
     // Apply to parent and remove from children
     if !common_attrs.is_empty() {
       element.attributes.extend(common_attrs.clone());
-
-      for child in &mut element.children {
-        if let crate::dom::SvgNode::Element(child_elem) = child {
-          for key in common_attrs.keys() {
-            child_elem.attributes.remove(key);
-          }
-        }
+    }
+    for child in &mut element.children {
+      if let crate::dom::SvgNode::Element(child_elem) = child {
+        child_elem.attributes.clear();
+        element.attributes.extend(common_attrs.clone());
       }
     }
 

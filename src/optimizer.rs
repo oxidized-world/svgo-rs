@@ -118,12 +118,10 @@ impl SvgOptimizer {
     for child in element.children {
       match child {
         SvgNode::Element(e) => self.serialize_element(e, writer)?,
-        SvgNode::Text(t) => {
-          match writer.write_event(Event::Text(BytesText::new(&t))) {
-            Ok(_) => {}
-            Err(e) => panic!("Error writing event: {:?}", e),
-          }
-        }
+        SvgNode::Text(t) => match writer.write_event(Event::Text(BytesText::new(&t))) {
+          Ok(_) => {}
+          Err(e) => panic!("Error writing event: {:?}", e),
+        },
       }
     }
 

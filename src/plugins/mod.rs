@@ -9,5 +9,5 @@ use crate::dom::SvgElement;
 use crate::error::Result;
 
 pub trait Plugin: Send + Sync {
-    fn process_element(&self, element: &mut SvgElement) -> Result<()>;
+  fn process_element(&self, element: &mut SvgElement) -> Result<()>;
 }
