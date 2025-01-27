@@ -1,23 +1,18 @@
-#![deny(clippy::all)]
-use plugins::class_adder::ClassAdderPlugin;
-use process_xml::{process_xml, XmlPlugin};
+pub mod dom;
+pub mod error;
+pub mod optimizer;
+pub mod plugins;
 
 use napi_derive::napi;
-
-mod plugins;
-mod process_xml;
+use optimizer::SvgOptimizer;
+use plugins::{CommonAttributesPlugin, MergeClassesPlugin};
 
 #[napi]
 pub fn optimize(input_xml: String) -> String {
-  let mut plugins: Vec<Box<dyn XmlPlugin>> = vec![Box::new(ClassAdderPlugin {
-    target_element: "div".to_string(),
-    class_name: "container".to_string(),
-  })];
-
-  let processed = process_xml(&input_xml, &mut plugins);
-
-  match processed {
-    Ok(output) => output,
-    Err(e) => format!("Error: {}", e),
-  }
+  let optimizer = SvgOptimizer::new(vec![
+    Box::new(CommonAttributesPlugin),
+    Box::new(MergeClassesPlugin),
+  ]);
+  let output = optimizer.optimize(input_xml.as_bytes()).unwrap();
+  String::from_utf8(output).unwrap()
 }

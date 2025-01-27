@@ -4,8 +4,8 @@ import { optimize } from '../index'
 test('sync function from native code', () => {
   const inputXml = `
 <?xml version="1.0"?>
-<div id="main">
-    <p id="paragraph">Example</p>
+<div name="lcs" id="main" class="container">
+    <p name="lcs" id="paragraph">Example</p>
 </div>
 `
 
