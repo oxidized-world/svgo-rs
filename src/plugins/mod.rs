@@ -1,2 +1,1 @@
-pub mod class_style;
-pub mod uppercase_id;
+pub mod class_adder;

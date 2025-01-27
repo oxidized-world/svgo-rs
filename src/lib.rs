@@ -1,30 +1,26 @@
 #![deny(clippy::all)]
-use plugin_pipeline::PluginPipeline;
-use plugins::class_style::ClassStylePlugin;
-use plugins::uppercase_id::UppercaseIdPlugin;
+use plugins::class_adder::ClassAdderPlugin;
+use process_xml::{XmlPlugin, process_xml};
 
 use napi_derive::napi;
 
-mod plugin_pipeline;
 mod plugins;
-mod xml_ast;
+mod process_xml;
 
 #[napi]
-pub fn main() -> String {
-  let input_xml = r#"
-      <div class="container" id="main">
-          <p class="text">Hello World</p>
-          <span id="subtitle">Rust XML Plugin System</span>
-      </div>
-  "#;
+pub fn optimize(input_xml: String) -> String {
 
-  let mut pipeline = PluginPipeline::new();
-  pipeline.add_plugin(Box::new(ClassStylePlugin));
-  pipeline.add_plugin(Box::new(UppercaseIdPlugin));
+  let mut plugins: Vec<Box<dyn XmlPlugin>> = vec![
+    Box::new(ClassAdderPlugin {
+      target_element: "div".to_string(),
+      class_name: "container".to_string(),
+    }),
+  ];
 
-  let output = pipeline.process(input_xml);
-  match output {
-    Ok(output) => return output,
-    Err(err) => return err.to_string(),
+  let processed = process_xml(&input_xml, &mut plugins);
+
+  match processed {
+    Ok(output) => output,
+    Err(e) => format!("Error: {}", e),  
   }
 }

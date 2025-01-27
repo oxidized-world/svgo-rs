@@ -284,6 +284,6 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { main } = nativeBinding
+const { optimize } = nativeBinding
 
-module.exports.main = main
+module.exports.optimize = optimize
