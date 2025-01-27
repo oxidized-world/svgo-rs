@@ -26,7 +26,7 @@ impl SvgOptimizer {
     loop {
       match reader.read_event()? {
         Event::Start(e) => {
-          let mut elem = self.parse_start_element(e);
+          let elem = self.parse_start_element(e);
 
           // 将当前元素压栈，开始处理新元素
           if let Some(parent) = current_element.take() {
@@ -110,18 +110,27 @@ impl SvgOptimizer {
       start.push_attribute((k.as_str(), v.as_str()));
     }
 
-    writer.write_event(Event::Start(start.clone()));
+    match writer.write_event(Event::Start(start.clone())) {
+      Ok(_) => {}
+      Err(e) => panic!("Error writing event: {:?}", e),
+    }
 
     for child in element.children {
       match child {
         SvgNode::Element(e) => self.serialize_element(e, writer)?,
         SvgNode::Text(t) => {
-          writer.write_event(Event::Text(BytesText::new(&t)));
+          match writer.write_event(Event::Text(BytesText::new(&t))) {
+            Ok(_) => {}
+            Err(e) => panic!("Error writing event: {:?}", e),
+          }
         }
       }
     }
 
-    writer.write_event(Event::End(start.to_end()));
+    match writer.write_event(Event::End(start.to_end())) {
+      Ok(_) => {}
+      Err(e) => panic!("Error writing event: {:?}", e),
+    }
     Ok(())
   }
 }

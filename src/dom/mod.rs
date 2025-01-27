@@ -1,5 +1,4 @@
 // src/dom/mod.rs
-use quick_xml::events::{BytesStart, BytesText};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, PartialEq)]
