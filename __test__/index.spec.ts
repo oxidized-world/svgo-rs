@@ -6,6 +6,7 @@ test('sync function from native code', () => {
 <?xml version="1.0"?>
 <g name="lcs" id="main" class="container">
     <p name="lcs" id="paragraph">Example</p>
+    <text name="lcs" id="text"></text>
 </g>
 `
 

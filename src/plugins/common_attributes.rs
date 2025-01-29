@@ -1,4 +1,3 @@
-// src/plugins/common_attributes.rs
 use crate::dom::SvgElement;
 use crate::error::Result;
 use std::collections::HashMap;
