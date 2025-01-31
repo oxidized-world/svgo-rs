@@ -85,6 +85,9 @@
     ],
     "*.toml": [
       "taplo format"
+    ],
+    "*.rs": [
+      "cargo fmt --"
     ]
   },
   "prettier": {
