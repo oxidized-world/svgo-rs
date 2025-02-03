@@ -5,17 +5,28 @@ pub mod plugins;
 
 use napi_derive::napi;
 use optimizer::SvgOptimizer;
-use plugins::{
-  CommonAttributesPlugin, MergeClassesPlugin, RemoveDescPlugin, RemoveEmptyTextPlugin,
-};
+use plugins::common_attributes::CommonAttributesPlugin;
+use plugins::remove_desc::{RemoveDescOptions, RemoveDescPlugin};
+use plugins::remove_doctype::RemoveDoctypePlugin;
+use plugins::remove_empty_text::RemoveEmptyTextPlugin;
+
+#[napi(object)]
+pub struct PluginConfig {
+  pub remove_desc: RemoveDescOptions,
+}
+
+#[napi(object)]
+pub struct OptimizeOptions {
+  pub plugins: PluginConfig,
+}
 
 #[napi]
-pub fn optimize(input_xml: String) -> String {
+pub fn optimize(input_xml: String, options: OptimizeOptions) -> String {
   let optimizer = SvgOptimizer::new(vec![
     Box::new(CommonAttributesPlugin),
-    Box::new(MergeClassesPlugin),
-    Box::new(RemoveEmptyTextPlugin),       // 传递参数
-    Box::new(RemoveDescPlugin::new(true)), // 传递参数
+    Box::new(RemoveEmptyTextPlugin),
+    Box::new(RemoveDescPlugin::new(options.plugins.remove_desc)),
+    Box::new(RemoveDoctypePlugin),
   ]);
   let output = optimizer.optimize(input_xml.as_bytes()).unwrap();
   String::from_utf8(output).unwrap()

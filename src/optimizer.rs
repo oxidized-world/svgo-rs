@@ -21,7 +21,7 @@ impl SvgOptimizer {
     let mut writer = Writer::new(Vec::new());
     let mut stack = Vec::new(); // 用于跟踪元素层级
 
-    let mut current_element: Option<SvgElement> = None;
+    let mut current_element: Option<SvgElement> = SvgElement::new("root").into();
 
     loop {
       match reader.read_event()? {
@@ -61,6 +61,17 @@ impl SvgOptimizer {
           }
         }
 
+        Event::DocType(text) => {
+          // 处理文档类型声明
+          let content = text.unescape()?.into_owned();
+          if !content.trim().is_empty() {
+            let elem = SvgNode::DocType(content);
+            current_element.as_mut().unwrap().add_child(elem);
+            if let Some(mut parent) = current_element.take() {
+              self.process_element(&mut parent)?;
+            }
+          }
+        }
         Event::Eof => break,
         _ => {}
       }
@@ -105,20 +116,27 @@ impl SvgOptimizer {
     element: SvgElement,
     writer: &mut quick_xml::Writer<Vec<u8>>,
   ) -> Result<()> {
-    let mut start = BytesStart::new(&element.name);
-    for (k, v) in &element.attributes {
-      start.push_attribute((k.as_str(), v.as_str()));
-    }
+    let name = element.name;
+    let mut start = BytesStart::new(&name);
+    if name != "root" {
+      for (k, v) in &element.attributes {
+        start.push_attribute((k.as_str(), v.as_str()));
+      }
 
-    match writer.write_event(Event::Start(start.clone())) {
-      Ok(_) => {}
-      Err(e) => panic!("Error writing event: {:?}", e),
+      match writer.write_event(Event::Start(start.clone())) {
+        Ok(_) => {}
+        Err(e) => panic!("Error writing event: {:?}", e),
+      }
     }
 
     for child in element.children {
       match child {
         SvgNode::Element(e) => self.serialize_element(e, writer)?,
         SvgNode::Text(t) => match writer.write_event(Event::Text(BytesText::new(&t))) {
+          Ok(_) => {}
+          Err(e) => panic!("Error writing event: {:?}", e),
+        },
+        SvgNode::DocType(t) => match writer.write_event(Event::DocType(BytesText::new(&t))) {
           Ok(_) => {}
           Err(e) => panic!("Error writing event: {:?}", e),
         },

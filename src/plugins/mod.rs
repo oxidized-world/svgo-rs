@@ -1,12 +1,7 @@
-mod common_attributes;
-mod merge_classes;
-mod remove_desc;
-mod remove_empty_text;
-
-pub use common_attributes::CommonAttributesPlugin;
-pub use merge_classes::MergeClassesPlugin;
-pub use remove_desc::RemoveDescPlugin;
-pub use remove_empty_text::RemoveEmptyTextPlugin;
+pub mod common_attributes;
+pub mod remove_desc;
+pub mod remove_doctype;
+pub mod remove_empty_text;
 
 use crate::dom::SvgElement;
 use crate::error::Result;

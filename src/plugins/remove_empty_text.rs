@@ -11,26 +11,16 @@ impl super::Plugin for RemoveEmptyTextPlugin {
     ) -> Result<()> {
       match current_node {
         SvgNode::Element(cur_element) => {
-          println!(
-            "Element: {:?}, children: {:?}, len: {:?}",
-            cur_element.name,
-            cur_element.children,
-            cur_element.children.len()
-          );
           if (cur_element.name == "text" || cur_element.name == "tspan")
             && cur_element.children.len() == 0
           {
-            print!(
-              "Deleting empty element: {:?}, children: {:?}",
-              &cur_element.name, &parent_element.children
-            );
             parent_element
               .children
               .retain(|child| child != current_node);
           }
           Ok(())
         }
-        SvgNode::Text(_) => Ok(()),
+        _ => Ok(()),
       }
     }
     let parent = element as *mut SvgElement;

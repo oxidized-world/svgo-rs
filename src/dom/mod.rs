@@ -12,6 +12,7 @@ pub struct SvgElement {
 pub enum SvgNode {
   Element(SvgElement),
   Text(String),
+  DocType(String),
 }
 
 impl SvgElement {

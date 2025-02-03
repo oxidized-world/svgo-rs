@@ -1,10 +1,22 @@
-pub struct RemoveDescPlugin {
+use napi_derive::napi;
+
+#[napi(object)]
+pub struct RemoveDescOptions {
+  /// Remove any `desc` elements, even if they have children.
   pub remove_any: bool,
 }
 
+/// Removes <desc>.
+/// Removes only standard editors content or empty elements because it can be
+/// used for accessibility. Enable parameter 'removeAny' to remove any
+/// description.
+pub struct RemoveDescPlugin {
+  pub options: RemoveDescOptions,
+}
+
 impl RemoveDescPlugin {
-  pub fn new(remove_any: bool) -> Self {
-    Self { remove_any }
+  pub fn new(options: RemoveDescOptions) -> Self {
+    Self { options }
   }
 }
 
@@ -26,12 +38,12 @@ impl super::Plugin for RemoveDescPlugin {
           }
           Ok(())
         }
-        crate::dom::SvgNode::Text(_) => Ok(()),
+        _ => Ok(()),
       }
     }
     let parent = element as *mut crate::dom::SvgElement;
     element.children.iter_mut().for_each(|child| {
-      delete_desc_elements(child, unsafe { &mut *parent }, self.remove_any).unwrap();
+      delete_desc_elements(child, unsafe { &mut *parent }, self.options.remove_any).unwrap();
     });
     Ok(())
   }
