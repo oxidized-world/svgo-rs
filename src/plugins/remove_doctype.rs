@@ -5,7 +5,13 @@ pub struct RemoveDoctypePlugin;
 
 impl super::Plugin for RemoveDoctypePlugin {
   fn process_element(&self, element: &mut SvgElement) -> Result<()> {
-    if element.name == "!DOCTYPE" {}
+    element.children.retain(|child| {
+      if let crate::dom::SvgNode::DocType(_) = child {
+        false
+      } else {
+        true
+      }
+    });
     Ok(())
   }
 }

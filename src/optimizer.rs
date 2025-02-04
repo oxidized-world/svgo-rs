@@ -67,8 +67,8 @@ impl SvgOptimizer {
           if !content.trim().is_empty() {
             let elem = SvgNode::DocType(content);
             current_element.as_mut().unwrap().add_child(elem);
-            if let Some(mut parent) = current_element.take() {
-              self.process_element(&mut parent)?;
+            if let Some(parent) = &mut current_element {
+              self.process_element(parent)?;
             }
           }
         }
@@ -118,6 +118,7 @@ impl SvgOptimizer {
   ) -> Result<()> {
     let name = element.name;
     let mut start = BytesStart::new(&name);
+    // ignore root element, because it's not a real SVG element
     if name != "root" {
       for (k, v) in &element.attributes {
         start.push_attribute((k.as_str(), v.as_str()));
@@ -143,9 +144,12 @@ impl SvgOptimizer {
       }
     }
 
-    match writer.write_event(Event::End(start.to_end())) {
-      Ok(_) => {}
-      Err(e) => panic!("Error writing event: {:?}", e),
+    // ignore root element, because it's not a real SVG element
+    if name != "root" {
+      match writer.write_event(Event::End(start.to_end())) {
+        Ok(_) => {}
+        Err(e) => panic!("Error writing event: {:?}", e),
+      }
     }
     Ok(())
   }
