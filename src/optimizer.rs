@@ -80,6 +80,18 @@ impl SvgOptimizer {
           }
         }
 
+        Event::Comment(text) => {
+          // 处理注释
+          let content = text.unescape()?.into_owned();
+          if !content.trim().is_empty() {
+            let elem = SvgNode::Comment(content);
+            current_element.as_mut().unwrap().add_child(elem);
+            if let Some(parent) = &mut current_element {
+              self.process_element(parent)?;
+            }
+          }
+        }
+
         Event::Decl(d) => {
           let mut encoding: Option<String> = Some("".to_string());
           let mut standalone: Option<String> = Some("".to_string());
@@ -174,6 +186,10 @@ impl SvgOptimizer {
           Err(e) => panic!("Error writing event: {:?}", e),
         },
         SvgNode::DocType(t) => match writer.write_event(Event::DocType(BytesText::new(&t))) {
+          Ok(_) => {}
+          Err(e) => panic!("Error writing event: {:?}", e),
+        },
+        SvgNode::Comment(c) => match writer.write_event(Event::Comment(BytesText::new(&c))) {
           Ok(_) => {}
           Err(e) => panic!("Error writing event: {:?}", e),
         },

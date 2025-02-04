@@ -5,6 +5,7 @@ test('sync function from native code', () => {
   const inputXml = `
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <?xml version="1.0"?>
+<!-- Generator: Adobe Illustrator 15.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <g name="lcs" id="main" class="container">
     <p name="lcs" id="paragraph">Example1</p>
     <p name="lcs" id="paragraph">Example2</p>

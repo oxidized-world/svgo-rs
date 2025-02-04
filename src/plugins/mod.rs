@@ -1,4 +1,5 @@
 pub mod common_attributes;
+pub mod remove_comments;
 pub mod remove_desc;
 pub mod remove_doctype;
 pub mod remove_empty_text;

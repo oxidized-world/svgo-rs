@@ -6,6 +6,7 @@ pub mod plugins;
 use napi_derive::napi;
 use optimizer::SvgOptimizer;
 use plugins::common_attributes::CommonAttributesPlugin;
+use plugins::remove_comments::RemoveCommentsPlugin;
 use plugins::remove_desc::{RemoveDescOptions, RemoveDescPlugin};
 use plugins::remove_doctype::RemoveDoctypePlugin;
 use plugins::remove_empty_text::RemoveEmptyTextPlugin;
@@ -29,6 +30,7 @@ pub fn optimize(input_xml: String, options: OptimizeOptions) -> String {
     Box::new(RemoveDescPlugin::new(options.plugins.remove_desc)),
     Box::new(RemoveDoctypePlugin),
     Box::new(RemoveXMLProcInstPlugin),
+    Box::new(RemoveCommentsPlugin),
   ]);
   let output = optimizer.optimize(input_xml.as_bytes()).unwrap();
   String::from_utf8(output).unwrap()

@@ -21,6 +21,7 @@ pub enum SvgNode {
   Text(String),
   DocType(String),
   Decl(Decl),
+  Comment(String),
 }
 
 impl SvgElement {
