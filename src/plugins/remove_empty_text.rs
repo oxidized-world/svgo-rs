@@ -1,6 +1,18 @@
 use crate::dom::{SvgElement, SvgNode};
 use crate::error::Result;
 
+/// Remove empty Text elements.
+///
+/// @see https://www.w3.org/TR/SVG11/text.html
+///
+/// Remove empty text element:
+/// <text/>
+///
+/// Remove empty tspan element:
+/// <tspan/>
+///
+/// Remove tref with empty xlink:href attribute:
+/// <tref xlink:href=""/>
 pub struct RemoveEmptyTextPlugin;
 
 impl super::Plugin for RemoveEmptyTextPlugin {

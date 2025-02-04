@@ -1,8 +1,8 @@
 // src/optimizer.rs
-use crate::dom::{SvgElement, SvgNode};
+use crate::dom::{Decl, SvgElement, SvgNode};
 use crate::error::Result;
 use crate::plugins::Plugin;
-use quick_xml::events::{BytesStart, BytesText};
+use quick_xml::events::{BytesDecl, BytesStart, BytesText};
 use quick_xml::{events::Event, Reader, Writer};
 
 pub struct SvgOptimizer {
@@ -12,6 +12,13 @@ pub struct SvgOptimizer {
 impl SvgOptimizer {
   pub fn new(plugins: Vec<Box<dyn Plugin>>) -> Self {
     Self { plugins }
+  }
+
+  pub fn vec_to_string(&self, vec: &Vec<u8>) -> std::result::Result<String, std::str::Utf8Error> {
+    // 将 &mut Vec<u8> 转为 &[u8] 切片
+    let bytes = &**vec;
+    // 转换为 &str，再转为 String
+    std::str::from_utf8(bytes).map(|s| s.to_string())
   }
 
   pub fn optimize(&self, input: &[u8]) -> Result<Vec<u8>> {
@@ -70,6 +77,35 @@ impl SvgOptimizer {
             if let Some(parent) = &mut current_element {
               self.process_element(parent)?;
             }
+          }
+        }
+
+        Event::Decl(d) => {
+          let mut encoding: Option<String> = Some("".to_string());
+          let mut standalone: Option<String> = Some("".to_string());
+
+          if let Some(dd) = d.encoding() {
+            match dd {
+              Ok(res) => encoding = Some(String::from_utf8_lossy(&res).into_owned()),
+              Err(err) => panic!("parse encoding value error: {:?}", err),
+            }
+          }
+
+          if let Some(dd) = d.standalone() {
+            match dd {
+              Ok(res) => standalone = Some(String::from_utf8_lossy(&res).into_owned()),
+              Err(err) => panic!("parse standalone value error: {:?}", err),
+            }
+          }
+
+          let elem = SvgNode::Decl(Decl {
+            version: self.vec_to_string(d.version().unwrap().to_mut()).unwrap(),
+            encoding: encoding,
+            standalone: standalone,
+          });
+          current_element.as_mut().unwrap().add_child(elem);
+          if let Some(parent) = &mut current_element {
+            self.process_element(parent)?;
           }
         }
         Event::Eof => break,
@@ -138,6 +174,14 @@ impl SvgOptimizer {
           Err(e) => panic!("Error writing event: {:?}", e),
         },
         SvgNode::DocType(t) => match writer.write_event(Event::DocType(BytesText::new(&t))) {
+          Ok(_) => {}
+          Err(e) => panic!("Error writing event: {:?}", e),
+        },
+        SvgNode::Decl(d) => match writer.write_event(Event::Decl(BytesDecl::new(
+          &d.version,
+          d.encoding.as_deref(),
+          d.standalone.as_deref(),
+        ))) {
           Ok(_) => {}
           Err(e) => panic!("Error writing event: {:?}", e),
         },

@@ -9,10 +9,18 @@ pub struct SvgElement {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct Decl {
+  pub version: String,
+  pub encoding: Option<String>,
+  pub standalone: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum SvgNode {
   Element(SvgElement),
   Text(String),
   DocType(String),
+  Decl(Decl),
 }
 
 impl SvgElement {
