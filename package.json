@@ -56,9 +56,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "version": "napi version",
-    "postinstall": "husky",
-    "prepack": "pinst --disable",
-    "postpack": "pinst --enable"
+    "postinstall": "husky"
   },
   "devDependencies": {
     "@napi-rs/cli": "^2.18.4",
