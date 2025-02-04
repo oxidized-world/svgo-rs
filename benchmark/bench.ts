@@ -44,7 +44,13 @@ b.add('Javascript optimize', () => {
 })
 
 b.add('Rust optimize', () => {
-  optimizeRs(inputXml)
+  optimizeRs(inputXml, {
+    plugins: {
+      removeDesc: {
+        removeAny: true,
+      },
+    },
+  })
 })
 
 await b.run()
