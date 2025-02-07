@@ -3,16 +3,18 @@ import { optimize } from '../index'
 
 test('sync function from native code', () => {
   const inputXml = `
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<?xml version="1.0"?>
-<!-- Generator: Adobe Illustrator 15.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<g name="lcs" id="main" class="container">
-    <p name="lcs" id="paragraph">Example1</p>
-    <p name="lcs" id="paragraph">Example2</p>
-    <text name="lcs" id="text">
-      <desc>111</desc>
-    </text>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg">
+    <g attr1="val1">
+        <g fill="red" color="#000" stroke="blue">
+            text
+        </g>
+        <g>
+          <rect fill="red" color="#000" />
+          <ellipsis fill="red" color="#000" />
+        </g>
+        <circle fill="red" color="#000" attr3="val3"/>
+    </g>
+</svg>
 `
 
   const res = optimize(inputXml, {

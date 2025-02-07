@@ -2,6 +2,7 @@ pub mod dom;
 pub mod error;
 pub mod optimizer;
 pub mod plugins;
+pub mod utils;
 
 use napi_derive::napi;
 use optimizer::SvgOptimizer;
