@@ -1,3 +1,4 @@
+use cssparser::{BasicParseError, ParseError, Parser, ParserInput};
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::collections::HashSet;
@@ -40,8 +41,7 @@ pub fn extract_css_selectors(svg: &str) -> HashSet<String> {
       Ok(Event::End(e)) => {
         if e.name().as_ref() == b"style" {
           in_style = false;
-          // parse_css_selectors(&current_css, &mut selectors);
-          !todo!("parse_css_selectors(&current_css, &mut selectors)");
+          parse_css_selectors(&current_css, &mut selectors);
           current_css.clear();
         }
       }
@@ -52,4 +52,41 @@ pub fn extract_css_selectors(svg: &str) -> HashSet<String> {
   }
 
   selectors
+}
+
+fn parse_css_selectors(css: &str, selectors: &mut HashSet<String>) {
+  let mut input = ParserInput::new(css);
+  let mut parser = Parser::new(&mut input);
+
+  while let Ok(token) = parser.next() {
+    match token {
+      cssparser::Token::SquareBracketBlock => {
+        parse_square_bracket_block(&mut parser, selectors);
+      }
+      _ => {}
+    }
+  }
+}
+
+fn parse_square_bracket_block(parser: &mut Parser, selectors: &mut HashSet<String>) {
+  let result: Result<(), ParseError<'_, BasicParseError<'_>>> =
+    parser.parse_nested_block(|parser| {
+      while let Ok(token) = parser.next() {
+        println!("token: {:?}", token);
+        match token {
+          cssparser::Token::Ident(attr_name) => {
+            selectors.insert(attr_name.to_string());
+          }
+          cssparser::Token::SquareBracketBlock => {
+            parse_square_bracket_block(parser, selectors);
+          }
+          _ => {}
+        }
+      }
+      Ok(())
+    });
+
+  if let Err(e) = result {
+    eprintln!("Parse error: {:?}", e);
+  }
 }

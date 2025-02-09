@@ -1,3 +1,16 @@
 {
-  "cSpell.words": ["eabi", "ELEMS", "gnueabihf", "msvc", "musleabihf", "napi", "riscv", "roxmltree", "taplo"]
+  "cSpell.words": [
+    "cssparser",
+    "eabi",
+    "ELEMS",
+    "gnueabihf",
+    "msvc",
+    "musleabihf",
+    "napi",
+    "riscv",
+    "roxmltree",
+    "serde",
+    "taplo",
+    "thiserror"
+  ]
 }
