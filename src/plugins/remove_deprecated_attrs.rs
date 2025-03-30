@@ -27,7 +27,6 @@ impl super::Plugin for RemoveDeprecatedAttrsPlugin {
       </style>
     "#,
     );
-    println!("res: {:?}", res);
     element.attributes.retain(|key, _| {
       if let Some(deprecated_attrs) = ATTRS_GROUPS_DEPRECATED.get(element.name.as_str()) {
         if let Some(unsafe_group) = deprecated_attrs.r#unsafe.as_ref() {

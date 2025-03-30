@@ -72,7 +72,6 @@ fn parse_square_bracket_block(parser: &mut Parser, selectors: &mut HashSet<Strin
   let result: Result<(), ParseError<'_, BasicParseError<'_>>> =
     parser.parse_nested_block(|parser| {
       while let Ok(token) = parser.next() {
-        println!("token: {:?}", token);
         match token {
           cssparser::Token::Ident(attr_name) => {
             selectors.insert(attr_name.to_string());
