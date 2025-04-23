@@ -17,13 +17,7 @@ test('sync function from native code', () => {
 </svg>
 `
 
-  const res = optimize(inputXml, {
-    plugins: {
-      removeDesc: {
-        removeAny: true,
-      },
-    },
-  })
+  const res = optimize(inputXml)
   console.log(res)
   expect(1).toBe(1)
 })

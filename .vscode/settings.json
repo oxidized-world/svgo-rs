@@ -1,5 +1,7 @@
 {
   "cSpell.words": [
+    "bumpalo",
+    "cdylib",
     "cssparser",
     "eabi",
     "ELEMS",
@@ -7,6 +9,7 @@
     "msvc",
     "musleabihf",
     "napi",
+    "oxlint",
     "riscv",
     "roxmltree",
     "serde",

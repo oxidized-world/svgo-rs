@@ -8,10 +8,9 @@
   "keywords": [
     "napi-rs",
     "NAPI",
-    "N-API",
     "Rust",
-    "node-addon",
-    "node-addon-api"
+    "svgo",
+    "svg optimizing"
   ],
   "files": [
     "index.d.ts",
