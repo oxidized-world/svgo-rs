@@ -48,7 +48,7 @@ pub struct XMLAstText<'arena> {
 #[derive(Debug, Clone)]
 pub struct XMLAstElement<'arena> {
   pub name: &'arena str,
-  pub attributes: HashMap<String, String>,
+  pub attributes: HashMap<&'arena str, &'arena str>,
   pub children: BumpVec<'arena, XMLAstChild<'arena>>,
 }
 
@@ -70,18 +70,21 @@ pub struct XMLAstRoot<'arena> {
 }
 
 /// 从 quick_xml 的 Attributes 迭代器解析属性到 HashMap
-fn parse_attributes(
-  attributes: Attributes,
+fn parse_attributes<'a>(
+  attributes: Attributes<'_>,
   reader: &Reader<&[u8]>, // 需要 reader 来访问解码器
-) -> Result<HashMap<String, String>, Box<dyn Error>> {
+  arena: &'a Bump,        // 添加 arena 参数
+) -> Result<HashMap<&'a str, &'a str>, Box<dyn Error>> {
   let mut attrs_map = HashMap::new();
   for attr_result in attributes {
     let attr = attr_result?;
     // 使用 reader 的解码器来处理可能的非 UTF-8 编码（尽管 XML 通常是 UTF-8）
-    let key = reader.decoder().decode(attr.key.as_ref())?.into_owned();
+    let cow = reader.decoder().decode(attr.key.as_ref())?;
+    let key: &str = arena.alloc_str(&cow);
     // 属性值需要解码实体（例如 &amp; -> &）
-    let value = attr.unescape_value()?.into_owned();
-    attrs_map.insert(key, value);
+    let raw_val = attr.unescape_value()?;
+    let value = arena.alloc_str(&raw_val);
+    attrs_map.insert(key, &*value);
   }
   Ok(attrs_map)
 }
@@ -107,7 +110,7 @@ fn decode_escaped<'arena>(
 }
 
 pub fn parse_svg<'arena>(
-  svg_string: &str,
+  svg_string: &'arena str,
   arena: &'arena Bump, // 传入 arena 引用
 ) -> Result<XMLAstRoot<'arena>, Box<dyn Error>> {
   let mut reader = Reader::from_str(svg_string);
@@ -125,7 +128,7 @@ pub fn parse_svg<'arena>(
     match reader.read_event_into(&mut buf) {
       Ok(Event::Start(e)) => {
         let name = decode_bytes(e.name().as_ref(), &reader, arena)?;
-        let attributes = parse_attributes(e.attributes(), &reader)?;
+        let attributes = parse_attributes(e.attributes(), &reader, arena)?;
         let element = XMLAstElement {
           name,
           attributes,
@@ -159,7 +162,7 @@ pub fn parse_svg<'arena>(
       // --- 空标签 <tag ... /> ---
       Ok(Event::Empty(e)) => {
         let name = decode_bytes(e.name().as_ref(), &reader, arena)?;
-        let attributes = parse_attributes(e.attributes(), &reader)?;
+        let attributes = parse_attributes(e.attributes(), &reader, arena)?;
         let element = XMLAstElement {
           name,
           attributes,
