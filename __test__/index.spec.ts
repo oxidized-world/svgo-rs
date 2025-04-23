@@ -12,6 +12,7 @@ test('sync function from native code', () => {
           <rect fill="red" color="#000" />
           <ellipsis fill="red" color="#000" />
         </g>
+        <desc>1111</desc>
         <circle fill="red" color="#000" attr3="val3"/>
     </g>
 </svg>

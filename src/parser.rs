@@ -75,11 +75,10 @@ pub struct XMLAstRoot<'arena> {
   pub children: BumpVec<'arena, XMLAstChild<'arena>>,
 }
 
-/// 从 quick_xml 的 Attributes 迭代器解析属性到 HashMap
 fn parse_attributes<'a>(
   attributes: Attributes<'_>,
-  reader: &Reader<&[u8]>, // 需要 reader 来访问解码器
-  arena: &'a Bump,        // 添加 arena 参数
+  reader: &Reader<&[u8]>,
+  arena: &'a Bump,
 ) -> Result<BumpVec<'a, (&'a str, &'a str)>, Box<dyn Error>> {
   let mut attrs_vec = BumpVec::new_in(arena);
   for attr_result in attributes {
@@ -88,7 +87,6 @@ fn parse_attributes<'a>(
     let key: &str = arena.alloc_str(&cow);
     let raw_val = attr.unescape_value()?;
     let value = arena.alloc_str(&raw_val);
-    // 直接 push 元组
     attrs_vec.push((key, &*value));
   }
   Ok(attrs_vec)
@@ -98,25 +96,25 @@ fn parse_attributes<'a>(
 fn decode_bytes<'arena>(
   bytes: &[u8],
   reader: &Reader<&[u8]>,
-  arena: &'arena Bump, // 添加 arena 参数
+  arena: &'arena Bump,
 ) -> Result<&'arena str, Box<dyn Error>> {
   let cow = reader.decoder().decode(bytes)?;
-  Ok(arena.alloc_str(&cow)) // 在 arena 中分配
+  Ok(arena.alloc_str(&cow))
 }
 
 /// 解码包含转义字符的文本内容并在 arena 中分配
 fn decode_escaped<'arena>(
   bytes_text: &BytesText,
-  _reader: &Reader<&[u8]>, // reader 可能不再需要直接用于此函数内部解码
-  arena: &'arena Bump,     // 添加 arena 参数
+  _reader: &Reader<&[u8]>,
+  arena: &'arena Bump,
 ) -> Result<&'arena str, Box<dyn Error>> {
-  let cow = bytes_text.unescape()?; // 处理 XML 实体
+  let cow = bytes_text.unescape()?;
   Ok(arena.alloc_str(&cow))
 }
 
 pub fn parse_svg<'arena>(
   svg_string: &'arena str,
-  arena: &'arena Bump, // 传入 arena 引用
+  arena: &'arena Bump,
 ) -> Result<XMLAstRoot<'arena>, Box<dyn Error>> {
   let mut reader = Reader::from_str(svg_string);
   reader.config_mut().trim_text(false);
@@ -143,7 +141,6 @@ pub fn parse_svg<'arena>(
       }
       // --- 结束标签 </tag> ---
       Ok(Event::End(_e)) => {
-        // 从栈顶弹出一个完成的元素
         if let Some(finished_element) = parent_stack.pop() {
           let child_node = XMLAstChild::Element(finished_element);
           // 如果栈不为空，说明它有父元素，将其添加到父元素的 children 中
@@ -186,7 +183,7 @@ pub fn parse_svg<'arena>(
       Ok(Event::Text(e)) => {
         let value = decode_escaped(&e, &reader, arena)?;
         let text_node = XMLAstChild::Text(XMLAstText { value });
-        // 添加到当前父元素（栈顶）或根节点（如果文本在顶层，虽然不常见于格式良好的XML）
+        // 添加到当前父元素（栈顶）或根节点
         if let Some(parent) = parent_stack.last_mut() {
           parent.children.push(text_node);
         } else {
@@ -227,7 +224,7 @@ pub fn parse_svg<'arena>(
         if parent_stack.is_empty() {
           root.children.push(doctype_node);
         } else {
-          // 在元素内部发现 Doctype? 这通常是无效的 XML，但我们还是处理一下
+          // 在元素内部发现 Doctype
           eprintln!(
             "Warning: Found DOCTYPE inside an element near position {}",
             reader.buffer_position()
@@ -240,8 +237,8 @@ pub fn parse_svg<'arena>(
         let content = decode_bytes(e.as_ref(), &reader, arena)?;
         // 将内容按第一个空格分割为 name 和 value
         let mut parts = content.splitn(2, |c: char| c.is_whitespace());
-        let name = parts.next().unwrap_or(""); // &'arena str
-        let value = parts.next().unwrap_or("").trim_start(); // &'arena str
+        let name = parts.next().unwrap_or("");
+        let value = parts.next().unwrap_or("").trim_start();
 
         let pi_node = XMLAstChild::Instruction(XMLAstInstruction { name, value });
         if let Some(parent) = parent_stack.last_mut() {
@@ -261,8 +258,8 @@ pub fn parse_svg<'arena>(
         }
       }
       // --- 文件结束 ---
-      Ok(Event::Eof) => break,           // 成功解析到文件末尾
-      Err(e) => return Err(Box::new(e)), // 将 quick-xml 的错误传递出去
+      Ok(Event::Eof) => break,
+      Err(e) => return Err(Box::new(e)),
     }
 
     // 清空缓冲区为下一次读取事件做准备
