@@ -4,7 +4,6 @@ use quick_xml::events::attributes::Attributes;
 use quick_xml::events::BytesText;
 use quick_xml::events::Event;
 use quick_xml::Reader;
-use std::collections::HashMap;
 use std::error::Error;
 
 /// <!DOCTYPE ...>
@@ -38,6 +37,12 @@ pub struct XMLAstCdata<'arena> {
   pub value: &'arena str,
 }
 
+/// <?xml ... ?>
+#[derive(Debug, Clone)]
+pub struct XMLAstDecl<'arena> {
+  pub value: &'arena str,
+}
+
 /// 文本节点
 #[derive(Debug, Clone)]
 pub struct XMLAstText<'arena> {
@@ -48,7 +53,7 @@ pub struct XMLAstText<'arena> {
 #[derive(Debug, Clone)]
 pub struct XMLAstElement<'arena> {
   pub name: &'arena str,
-  pub attributes: HashMap<&'arena str, &'arena str>,
+  pub attributes: BumpVec<'arena, (&'arena str, &'arena str)>,
   pub children: BumpVec<'arena, XMLAstChild<'arena>>,
 }
 
@@ -61,6 +66,7 @@ pub enum XMLAstChild<'arena> {
   Cdata(XMLAstCdata<'arena>),
   Text(XMLAstText<'arena>),
   Element(XMLAstElement<'arena>),
+  Decl(XMLAstDecl<'arena>),
 }
 
 /// 根节点
@@ -74,19 +80,18 @@ fn parse_attributes<'a>(
   attributes: Attributes<'_>,
   reader: &Reader<&[u8]>, // 需要 reader 来访问解码器
   arena: &'a Bump,        // 添加 arena 参数
-) -> Result<HashMap<&'a str, &'a str>, Box<dyn Error>> {
-  let mut attrs_map = HashMap::new();
+) -> Result<BumpVec<'a, (&'a str, &'a str)>, Box<dyn Error>> {
+  let mut attrs_vec = BumpVec::new_in(arena);
   for attr_result in attributes {
     let attr = attr_result?;
-    // 使用 reader 的解码器来处理可能的非 UTF-8 编码（尽管 XML 通常是 UTF-8）
     let cow = reader.decoder().decode(attr.key.as_ref())?;
     let key: &str = arena.alloc_str(&cow);
-    // 属性值需要解码实体（例如 &amp; -> &）
     let raw_val = attr.unescape_value()?;
     let value = arena.alloc_str(&raw_val);
-    attrs_map.insert(key, &*value);
+    // 直接 push 元组
+    attrs_vec.push((key, &*value));
   }
-  Ok(attrs_map)
+  Ok(attrs_vec)
 }
 
 /// 解码 quick_xml 的字节切片并在 arena 中分配
@@ -106,7 +111,7 @@ fn decode_escaped<'arena>(
   arena: &'arena Bump,     // 添加 arena 参数
 ) -> Result<&'arena str, Box<dyn Error>> {
   let cow = bytes_text.unescape()?; // 处理 XML 实体
-  Ok(arena.alloc_str(&cow)) // 在 arena 中分配
+  Ok(arena.alloc_str(&cow))
 }
 
 pub fn parse_svg<'arena>(
@@ -246,9 +251,14 @@ pub fn parse_svg<'arena>(
         }
       }
       // --- XML Declaration <?xml ...?> ---
-      Ok(Event::Decl(_e)) => {
-        // 通常我们不需要在 AST 中表示 XML 声明，可以忽略
-        // 如果需要，可以解析 _e (BytesDecl) 并添加到 root 的某个字段
+      Ok(Event::Decl(e)) => {
+        let value = decode_bytes(e.as_ref(), &reader, arena)?;
+        let cdata_node = XMLAstChild::Decl(XMLAstDecl { value });
+        if let Some(parent) = parent_stack.last_mut() {
+          parent.children.push(cdata_node);
+        } else {
+          root.children.push(cdata_node);
+        }
       }
       // --- 文件结束 ---
       Ok(Event::Eof) => break,           // 成功解析到文件末尾
