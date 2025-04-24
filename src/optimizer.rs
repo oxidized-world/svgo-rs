@@ -54,8 +54,14 @@ impl<'a> SvgOptimizer<'a> {
   }
 
   pub fn optimize(&self, root: &mut XMLAstRoot<'a>) -> String {
+    for plugin in &self.plugins {
+      plugin.root_enter(root);
+    }
     // 对根节点的 children 启动遍历
     self.traverse_children(&mut root.children);
+    for plugin in &self.plugins {
+      plugin.root_exit(root);
+    }
     self.generate_svg(root)
   }
 

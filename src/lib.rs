@@ -6,6 +6,7 @@ use bumpalo::Bump;
 use napi_derive::napi;
 use optimizer::SvgOptimizer;
 use parser::parse_svg;
+use plugins::move_elems_attrs_to_group::MoveElemsAttrsToGroupPlugin;
 use plugins::remove_comments::RemoveCommentsPlugin;
 use plugins::remove_desc::RemoveDescPlugin;
 use plugins::remove_doctype::RemoveDoctypePlugin;
@@ -24,14 +25,19 @@ pub fn optimize(input_xml: String) -> String {
   let mut root = parse_svg(&input_xml, &arena).unwrap();
 
   let optimizer = SvgOptimizer::new(vec![
-    Box::new(RemoveDescPlugin { remove_any: true }),
-    Box::new(RemoveDoctypePlugin {}),
-    Box::new(RemoveTitlePlugin {}),
+    Box::new(RemoveDescPlugin {
+      remove_any: true,
+      arena: &arena,
+    }),
+    Box::new(RemoveDoctypePlugin { arena: &arena }),
+    Box::new(RemoveTitlePlugin { arena: &arena }),
     Box::new(RemoveCommentsPlugin {
       preserve_patterns: vec![Regex::new(r"^!").unwrap()],
+      arena: &arena,
     }),
-    Box::new(RemoveXMLProcInstPlugin {}),
-    Box::new(RemoveMetadataPlugin {}),
+    Box::new(RemoveXMLProcInstPlugin { arena: &arena }),
+    Box::new(RemoveMetadataPlugin { arena: &arena }),
+    Box::new(MoveElemsAttrsToGroupPlugin::new(&arena)),
   ]);
   optimizer.optimize(&mut root)
 }

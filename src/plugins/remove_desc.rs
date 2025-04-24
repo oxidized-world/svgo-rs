@@ -1,3 +1,5 @@
+use bumpalo::Bump;
+
 use crate::optimizer::{Plugin, VisitAction};
 use crate::parser::{XMLAstChild, XMLAstElement};
 
@@ -5,11 +7,12 @@ use crate::parser::{XMLAstChild, XMLAstElement};
 ///
 /// 仅删除空的或以标准编辑器生成内容开头的 `<desc>`，以保留可访问性描述。
 /// 设置 `remove_any = true` 则删除所有 `<desc>`.
-pub struct RemoveDescPlugin {
+pub struct RemoveDescPlugin<'a> {
   pub remove_any: bool,
+  pub arena: &'a Bump,
 }
 
-impl<'a> Plugin<'a> for RemoveDescPlugin {
+impl<'a> Plugin<'a> for RemoveDescPlugin<'a> {
   fn element_enter(&self, el: &mut XMLAstElement<'a>) -> VisitAction {
     if el.name == "desc" {
       if self.remove_any {

@@ -10,6 +10,7 @@ crate-type = ["cdylib"]
 [dependencies]
 bumpalo     = { version = "3.17.0", features = ["collections"] }
 env_logger  = "0.11.8"
+lazy_static = "1.4.0"
 log         = "0.4.27"
 napi        = { version = "2.16.17", features = ["napi6"] }
 napi-derive = "2.16.13"
