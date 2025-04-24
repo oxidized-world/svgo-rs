@@ -14,6 +14,7 @@ log         = "0.4.27"
 napi        = { version = "2.16.17", features = ["napi6"] }
 napi-derive = "2.16.13"
 quick-xml   = "0.37.3"
+regex       = "1.11.1"
 
 [build-dependencies]
 napi-build = "2"

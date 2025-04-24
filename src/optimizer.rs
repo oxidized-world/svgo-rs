@@ -73,6 +73,11 @@ impl<'a> SvgOptimizer<'a> {
             .plugins
             .iter()
             .any(|plugin| plugin.doctype_enter(el) == VisitAction::Remove)
+        } else if let XMLAstChild::Comment(el) = &mut children[i] {
+          self
+            .plugins
+            .iter()
+            .any(|plugin| plugin.comment_enter(el) == VisitAction::Remove)
         } else {
           false
         }
