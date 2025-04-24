@@ -1,4 +1,7 @@
-use crate::parser::{XMLAstChild, XMLAstComment, XMLAstElement, XMLAstRoot, XMLAstText, XMLAstDoctype, XMLAstInstruction, XMLAstCdata};
+use crate::parser::{
+  XMLAstCdata, XMLAstChild, XMLAstComment, XMLAstDoctype, XMLAstElement, XMLAstInstruction,
+  XMLAstRoot, XMLAstText,
+};
 use bumpalo::collections::Vec as BumpVec;
 
 #[derive(PartialEq, Eq)]
@@ -6,16 +9,17 @@ pub enum VisitAction {
   /// 保留该元素
   Keep,
   /// 移除该元素
-  Remove
+  Remove,
 }
 
 pub trait Plugin<'a> {
-
   fn root_enter(&self, el: &mut XMLAstRoot<'a>) {}
   fn root_exit(&self, el: &mut XMLAstRoot<'a>) {}
 
   /// return true 表示要把这个 element 从父节点里删掉
-  fn element_enter(&self, el: &mut XMLAstElement<'a>) -> VisitAction { VisitAction::Keep }
+  fn element_enter(&self, el: &mut XMLAstElement<'a>) -> VisitAction {
+    VisitAction::Keep
+  }
   fn element_exit(&self, el: &mut XMLAstElement<'a>) {}
 
   fn text_enter(&self, el: &mut XMLAstText<'a>) {}
@@ -24,7 +28,9 @@ pub trait Plugin<'a> {
   fn comment_enter(&self, el: &mut XMLAstComment<'a>) {}
   fn comment_exit(&self, el: &mut XMLAstComment<'a>) {}
 
-  fn doctype_enter(&self, el: &mut XMLAstDoctype<'a>) {}
+  fn doctype_enter(&self, el: &mut XMLAstDoctype<'a>) -> VisitAction {
+    VisitAction::Keep
+  }
   fn doctype_exit(&self, el: &mut XMLAstDoctype<'a>) {}
 
   fn instruction_enter(&self, el: &mut XMLAstInstruction<'a>) {}
@@ -54,7 +60,15 @@ impl<'a> SvgOptimizer<'a> {
     while i < children.len() {
       let should_remove = {
         if let XMLAstChild::Element(el) = &mut children[i] {
-          self.plugins.iter().any(|plugin| plugin.element_enter(el) == VisitAction::Remove)
+          self
+            .plugins
+            .iter()
+            .any(|plugin| plugin.element_enter(el) == VisitAction::Remove)
+        } else if let XMLAstChild::Doctype(el) = &mut children[i] {
+          self
+            .plugins
+            .iter()
+            .any(|plugin| plugin.doctype_enter(el) == VisitAction::Remove)
         } else {
           false
         }
