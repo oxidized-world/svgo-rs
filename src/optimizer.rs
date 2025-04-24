@@ -13,31 +13,35 @@ pub enum VisitAction {
 }
 
 pub trait Plugin<'a> {
-  fn root_enter(&self, el: &mut XMLAstRoot<'a>) {}
-  fn root_exit(&self, el: &mut XMLAstRoot<'a>) {}
+  fn root_enter(&self, _el: &mut XMLAstRoot<'a>) {}
+  fn root_exit(&self, _el: &mut XMLAstRoot<'a>) {}
 
   /// return true 表示要把这个 element 从父节点里删掉
-  fn element_enter(&self, el: &mut XMLAstElement<'a>) -> VisitAction {
+  fn element_enter(&self, _el: &mut XMLAstElement<'a>) -> VisitAction {
     VisitAction::Keep
   }
-  fn element_exit(&self, el: &mut XMLAstElement<'a>) {}
+  fn element_exit(&self, _el: &mut XMLAstElement<'a>) {}
 
-  fn text_enter(&self, el: &mut XMLAstText<'a>) {}
-  fn text_exit(&self, el: &mut XMLAstText<'a>) {}
+  fn text_enter(&self, _el: &mut XMLAstText<'a>) {}
+  fn text_exit(&self, _el: &mut XMLAstText<'a>) {}
 
-  fn comment_enter(&self, el: &mut XMLAstComment<'a>) {}
-  fn comment_exit(&self, el: &mut XMLAstComment<'a>) {}
-
-  fn doctype_enter(&self, el: &mut XMLAstDoctype<'a>) -> VisitAction {
+  fn comment_enter(&self, _el: &mut XMLAstComment<'a>) -> VisitAction {
     VisitAction::Keep
   }
-  fn doctype_exit(&self, el: &mut XMLAstDoctype<'a>) {}
+  fn comment_exit(&self, _el: &mut XMLAstComment<'a>) {}
 
-  fn instruction_enter(&self, el: &mut XMLAstInstruction<'a>) {}
-  fn instruction_exit(&self, el: &mut XMLAstInstruction<'a>) {}
+  fn doctype_enter(&self, _el: &mut XMLAstDoctype<'a>) -> VisitAction {
+    VisitAction::Keep
+  }
+  fn doctype_exit(&self, _el: &mut XMLAstDoctype<'a>) {}
 
-  fn cdata_enter(&self, el: &mut XMLAstCdata<'a>) {}
-  fn cdata_exit(&self, el: &mut XMLAstCdata<'a>) {}
+  fn instruction_enter(&self, _el: &mut XMLAstInstruction<'a>) -> VisitAction {
+    VisitAction::Keep
+  }
+  fn instruction_exit(&self, _el: &mut XMLAstInstruction<'a>) {}
+
+  fn cdata_enter(&self, _el: &mut XMLAstCdata<'a>) {}
+  fn cdata_exit(&self, _el: &mut XMLAstCdata<'a>) {}
 }
 
 pub struct SvgOptimizer<'a> {
