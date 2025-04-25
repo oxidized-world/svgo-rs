@@ -5,6 +5,7 @@ test('sync function from native code', () => {
   const inputXml = `
 <svg xmlns="http://www.w3.org/2000/svg">
     <g attr1="val1">
+    <!--! legal comment -->
         <g fill="red" color="#000" stroke="blue">
             text
         </g>

@@ -3,9 +3,26 @@ use bumpalo::Bump;
 use regex::Regex;
 
 /// Remove comments.
+#[allow(dead_code)]
 pub struct RemoveCommentsPlugin<'a> {
-  pub preserve_patterns: Vec<Regex>,
-  pub arena: &'a Bump,
+  preserve_patterns: Vec<Regex>,
+  arena: &'a Bump,
+}
+
+/// Configuration for RemoveCommentsPlugin.
+pub struct RemoveCommentsConfig {
+  pub preserve_patterns: Option<Vec<Regex>>,
+}
+
+impl<'a> RemoveCommentsPlugin<'a> {
+  pub fn new(config: RemoveCommentsConfig, arena: &'a Bump) -> Self {
+    RemoveCommentsPlugin {
+      arena: arena,
+      preserve_patterns: config
+        .preserve_patterns
+        .unwrap_or_else(|| vec![Regex::new(r"^!").unwrap()]),
+    }
+  }
 }
 
 impl<'a> Plugin<'a> for RemoveCommentsPlugin<'a> {

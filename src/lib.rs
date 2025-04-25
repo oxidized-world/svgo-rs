@@ -6,14 +6,15 @@ use bumpalo::Bump;
 use napi_derive::napi;
 use optimizer::SvgOptimizer;
 use parser::parse_svg;
-use plugins::move_elems_attrs_to_group::MoveElemsAttrsToGroupPlugin;
-use plugins::remove_comments::RemoveCommentsPlugin;
-use plugins::remove_desc::RemoveDescPlugin;
-use plugins::remove_doctype::RemoveDoctypePlugin;
-use plugins::remove_metadata::RemoveMetadataPlugin;
-use plugins::remove_title::RemoveTitlePlugin;
-use plugins::remove_xml_proc_inst::RemoveXMLProcInstPlugin;
-use regex::Regex;
+use plugins::move_elems_attrs_to_group::{
+  MoveElemsAttrsToGroupPlugin, MoveElemsAttrsToGroupPluginConfig,
+};
+use plugins::remove_comments::{RemoveCommentsConfig, RemoveCommentsPlugin};
+use plugins::remove_desc::{RemoveDescPlugin, RemoveDescPluginConfig};
+use plugins::remove_doctype::{RemoveDoctypePlugin, RemoveDoctypePluginConfig};
+use plugins::remove_metadata::{RemoveMetadataPlugin, RemoveMetadataPluginConfig};
+use plugins::remove_title::{RemoveTitlePlugin, RemoveTitlePluginConfig};
+use plugins::remove_xml_proc_inst::{RemoveXMLProcInstPlugin, RemoveXMLProcInstPluginConfig};
 
 #[napi]
 pub fn optimize(input_xml: String) -> String {
@@ -25,19 +26,33 @@ pub fn optimize(input_xml: String) -> String {
   let mut root = parse_svg(&input_xml, &arena).unwrap();
 
   let optimizer = SvgOptimizer::new(vec![
-    Box::new(RemoveDescPlugin {
-      remove_any: true,
-      arena: &arena,
-    }),
-    Box::new(RemoveDoctypePlugin { arena: &arena }),
-    Box::new(RemoveTitlePlugin { arena: &arena }),
-    Box::new(RemoveCommentsPlugin {
-      preserve_patterns: vec![Regex::new(r"^!").unwrap()],
-      arena: &arena,
-    }),
-    Box::new(RemoveXMLProcInstPlugin { arena: &arena }),
-    Box::new(RemoveMetadataPlugin { arena: &arena }),
-    Box::new(MoveElemsAttrsToGroupPlugin::new(&arena)),
+    Box::new(RemoveDescPlugin::new(
+      RemoveDescPluginConfig { remove_any: true },
+      &arena,
+    )),
+    Box::new(RemoveDoctypePlugin::new(
+      RemoveDoctypePluginConfig {},
+      &arena,
+    )),
+    Box::new(RemoveTitlePlugin::new(RemoveTitlePluginConfig {}, &arena)),
+    Box::new(RemoveCommentsPlugin::new(
+      RemoveCommentsConfig {
+        preserve_patterns: None,
+      },
+      &arena,
+    )),
+    Box::new(RemoveXMLProcInstPlugin::new(
+      RemoveXMLProcInstPluginConfig {},
+      &arena,
+    )),
+    Box::new(RemoveMetadataPlugin::new(
+      RemoveMetadataPluginConfig {},
+      &arena,
+    )),
+    Box::new(MoveElemsAttrsToGroupPlugin::new(
+      MoveElemsAttrsToGroupPluginConfig {},
+      &arena,
+    )),
   ]);
   optimizer.optimize(&mut root)
 }

@@ -29,8 +29,10 @@ pub struct MoveElemsAttrsToGroupPlugin<'a> {
   arena: &'a Bump,
 }
 
+pub struct MoveElemsAttrsToGroupPluginConfig {}
+
 impl<'a> MoveElemsAttrsToGroupPlugin<'a> {
-  pub fn new(arena: &'a Bump) -> Self {
+  pub fn new(_config: MoveElemsAttrsToGroupPluginConfig, arena: &'a Bump) -> Self {
     MoveElemsAttrsToGroupPlugin {
       has_style_element: false,
       arena: arena,

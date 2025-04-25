@@ -1,6 +1,6 @@
 use crate::parser::{
-  XMLAstCdata, XMLAstChild, XMLAstComment, XMLAstDoctype, XMLAstElement, XMLAstInstruction,
-  XMLAstRoot, XMLAstText,
+  XMLAstCdata, XMLAstChild, XMLAstComment, XMLAstDecl, XMLAstDoctype, XMLAstElement,
+  XMLAstInstruction, XMLAstRoot, XMLAstText,
 };
 use bumpalo::collections::Vec as BumpVec;
 
@@ -22,7 +22,9 @@ pub trait Plugin<'a> {
   }
   fn element_exit(&self, _el: &mut XMLAstElement<'a>) {}
 
-  fn text_enter(&self, _el: &mut XMLAstText<'a>) {}
+  fn text_enter(&self, _el: &mut XMLAstText<'a>) -> VisitAction {
+    VisitAction::Keep
+  }
   fn text_exit(&self, _el: &mut XMLAstText<'a>) {}
 
   fn comment_enter(&self, _el: &mut XMLAstComment<'a>) -> VisitAction {
@@ -40,8 +42,15 @@ pub trait Plugin<'a> {
   }
   fn instruction_exit(&self, _el: &mut XMLAstInstruction<'a>) {}
 
-  fn cdata_enter(&self, _el: &mut XMLAstCdata<'a>) {}
+  fn cdata_enter(&self, _el: &mut XMLAstCdata<'a>) -> VisitAction {
+    VisitAction::Keep
+  }
   fn cdata_exit(&self, _el: &mut XMLAstCdata<'a>) {}
+
+  fn decl_enter(&self, _el: &mut XMLAstDecl<'a>) -> VisitAction {
+    VisitAction::Keep
+  }
+  fn decl_exit(&self, _el: &mut XMLAstDecl<'a>) {}
 }
 
 pub struct SvgOptimizer<'a> {
@@ -68,50 +77,91 @@ impl<'a> SvgOptimizer<'a> {
   fn traverse_children(&self, children: &mut BumpVec<'a, XMLAstChild<'a>>) {
     let mut i = 0;
     while i < children.len() {
-      let should_remove = {
-        if let XMLAstChild::Element(el) = &mut children[i] {
-          self
-            .plugins
-            .iter()
-            .any(|plugin| plugin.element_enter(el) == VisitAction::Remove)
-        } else if let XMLAstChild::Doctype(el) = &mut children[i] {
-          self
-            .plugins
-            .iter()
-            .any(|plugin| plugin.doctype_enter(el) == VisitAction::Remove)
-        } else if let XMLAstChild::Comment(el) = &mut children[i] {
-          self
-            .plugins
-            .iter()
-            .any(|plugin| plugin.comment_enter(el) == VisitAction::Remove)
-        } else {
-          false
-        }
+      // Check if any plugin wants to remove this node via the enter hook
+      let should_remove = match &mut children[i] {
+        XMLAstChild::Doctype(el) => self
+          .plugins
+          .iter()
+          .any(|plugin| plugin.doctype_enter(el) == VisitAction::Remove),
+        XMLAstChild::Instruction(el) => self
+          .plugins
+          .iter()
+          .any(|plugin| plugin.instruction_enter(el) == VisitAction::Remove),
+        XMLAstChild::Comment(el) => self
+          .plugins
+          .iter()
+          .any(|plugin| plugin.comment_enter(el) == VisitAction::Remove),
+        XMLAstChild::Cdata(el) => self
+          .plugins
+          .iter()
+          .any(|plugin| plugin.cdata_enter(el) == VisitAction::Remove),
+        XMLAstChild::Text(el) => self
+          .plugins
+          .iter()
+          .any(|plugin| plugin.text_enter(el) == VisitAction::Remove),
+        XMLAstChild::Element(el) => self
+          .plugins
+          .iter()
+          .any(|plugin| plugin.element_enter(el) == VisitAction::Remove),
+        // Assuming Decl nodes are never removed by plugins
+        XMLAstChild::Decl(el) => self
+          .plugins
+          .iter()
+          .any(|plugin| plugin.decl_enter(el) == VisitAction::Remove),
       };
+
       if should_remove {
         children.remove(i);
+        // Do not increment i, the next element shifts to the current index
         continue;
       }
 
+      // If not removed, traverse deeper (for elements) and call exit hooks
       match &mut children[i] {
         XMLAstChild::Element(el) => {
+          // Traverse children before calling exit hooks for the parent
           self.traverse_children(&mut el.children);
           for plugin in &self.plugins {
             plugin.element_exit(el);
           }
         }
         XMLAstChild::Text(t) => {
+          // Call text_exit (enter hook was checked above)
           for plugin in &self.plugins {
-            plugin.text_enter(t);
+            plugin.text_exit(t);
           }
         }
         XMLAstChild::Comment(c) => {
+          // Call comment_exit
           for plugin in &self.plugins {
-            plugin.comment_enter(c);
+            plugin.comment_exit(c);
           }
         }
-        _ => {}
+        XMLAstChild::Doctype(d) => {
+          // Call doctype_exit
+          for plugin in &self.plugins {
+            plugin.doctype_exit(d);
+          }
+        }
+        XMLAstChild::Instruction(ins) => {
+          // Call instruction_exit
+          for plugin in &self.plugins {
+            plugin.instruction_exit(ins);
+          }
+        }
+        XMLAstChild::Cdata(cd) => {
+          // Call cdata_exit
+          for plugin in &self.plugins {
+            plugin.cdata_exit(cd);
+          }
+        }
+        XMLAstChild::Decl(decl) => {
+          for plugin in &self.plugins {
+            plugin.decl_exit(decl);
+          }
+        }
       }
+      // Increment index only if the element was not removed
       i += 1;
     }
   }
