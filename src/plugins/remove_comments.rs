@@ -1,24 +1,25 @@
-use crate::dom::SvgElement;
-use crate::error::Result;
+use crate::optimizer::{Plugin, VisitAction};
+use bumpalo::Bump;
+use regex::Regex;
 
-/// 移除注释。
-///
-/// 示例
-/// ```svg
-/// <!-- Generator: Adobe Illustrator 15.0.0, SVG Export
-/// Plug-In . SVG Version: 6.00 Build 0)  -->
-/// ```
-pub struct RemoveCommentsPlugin;
+/// Remove comments.
+pub struct RemoveCommentsPlugin<'a> {
+  pub preserve_patterns: Vec<Regex>,
+  pub arena: &'a Bump,
+}
 
-impl super::Plugin for RemoveCommentsPlugin {
-  fn process_element(&self, element: &mut SvgElement) -> Result<()> {
-    element.children.retain(|child| {
-      if let crate::dom::SvgNode::Comment(_) = child {
-        false
-      } else {
-        true
+impl<'a> Plugin<'a> for RemoveCommentsPlugin<'a> {
+  fn comment_enter(&self, _el: &mut crate::parser::XMLAstComment<'a>) -> VisitAction {
+    // Iterate through the patterns to preserve
+    for pattern in &self.preserve_patterns {
+      // Check if the comment text matches the current pattern
+      // Assuming el.value contains the comment text
+      if pattern.is_match(&_el.value) {
+        // If it matches, keep the comment and stop checking
+        return VisitAction::Keep;
       }
-    });
-    Ok(())
+    }
+    // If no pattern matched, remove the comment
+    VisitAction::Remove
   }
 }

@@ -12,18 +12,13 @@ test('sync function from native code', () => {
           <rect fill="red" color="#000" />
           <ellipsis fill="red" color="#000" />
         </g>
+        <desc>1111</desc>
         <circle fill="red" color="#000" attr3="val3"/>
     </g>
 </svg>
 `
 
-  const res = optimize(inputXml, {
-    plugins: {
-      removeDesc: {
-        removeAny: true,
-      },
-    },
-  })
+  const res = optimize(inputXml)
   console.log(res)
   expect(1).toBe(1)
 })

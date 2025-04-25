@@ -1,17 +1,19 @@
-use crate::dom::SvgElement;
-use crate::error::Result;
+use bumpalo::Bump;
 
-pub struct RemoveXMLProcInstPlugin;
+use crate::optimizer::{Plugin, VisitAction};
+use crate::parser::XMLAstInstruction;
 
-impl super::Plugin for RemoveXMLProcInstPlugin {
-  fn process_element(&self, element: &mut SvgElement) -> Result<()> {
-    element.children.retain(|child| {
-      if let crate::dom::SvgNode::Decl(_) = child {
-        false
-      } else {
-        true
-      }
-    });
-    Ok(())
+/// Remove XML Processing Instruction.
+pub struct RemoveXMLProcInstPlugin<'a> {
+  pub arena: &'a Bump,
+}
+
+impl<'a> Plugin<'a> for RemoveXMLProcInstPlugin<'a> {
+  fn instruction_enter(&self, el: &mut XMLAstInstruction<'a>) -> VisitAction {
+    if el.name == "xml" {
+      VisitAction::Remove
+    } else {
+      VisitAction::Keep
+    }
   }
 }

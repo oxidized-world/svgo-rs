@@ -32,25 +32,12 @@ const inputXml = `
 
 b.add('Javascript optimize', () => {
   optimize(inputXml, {
-    plugins: [
-      {
-        name: 'addClassesToSVGElement',
-        params: {
-          classNames: ['container', 'main'],
-        },
-      },
-    ],
+    plugins: ['removeDesc', 'removeDoctype', 'removeTitle'],
   })
 })
 
 b.add('Rust optimize', () => {
-  optimizeRs(inputXml, {
-    plugins: {
-      removeDesc: {
-        removeAny: true,
-      },
-    },
-  })
+  optimizeRs(inputXml)
 })
 
 await b.run()
