@@ -19,6 +19,7 @@ test('sync function from native code', () => {
 `
 
   const res = optimize(inputXml)
+  // biome-ignore lint/suspicious/noConsole: <explanation>
   console.log(res)
   expect(1).toBe(1)
 })

@@ -46,11 +46,10 @@
     "bench": "node --import @swc-node/register/esm-register benchmark/bench.ts",
     "build": "napi build --platform --release",
     "build:debug": "napi build --platform",
-    "format": "run-p format:prettier format:rs format:toml",
-    "format:prettier": "prettier . -w",
+    "format": "run-p format:rs format:toml",
     "format:toml": "taplo format",
     "format:rs": "cargo fmt",
-    "lint": "oxlint .",
+    "lint": "oxlint . --write",
     "prepublishOnly": "napi prepublish -t npm",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -58,27 +57,22 @@
     "postinstall": "husky"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@napi-rs/cli": "^2.18.4",
     "@swc-node/register": "^1.10.10",
     "@swc/core": "^1.11.21",
     "@taplo/cli": "^0.7.0",
-    "chalk": "^5.4.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.1",
     "npm-run-all2": "^7.0.2",
-    "oxlint": "^0.16.7",
-    "prettier": "^3.5.3",
     "svgo": "^3.3.2",
     "tinybench": "^4.0.1",
     "typescript": "^5.8.3",
     "vitest": "^3.1.2"
   },
   "lint-staged": {
-    "*.@(js|ts|tsx)": [
-      "oxlint --fix"
-    ],
     "*.@(js|ts|tsx|yml|yaml|md|json)": [
-      "prettier --write"
+      "biome lint --write"
     ],
     "*.toml": [
       "taplo format"
@@ -86,13 +80,6 @@
     "*.rs": [
       "cargo fmt --"
     ]
-  },
-  "prettier": {
-    "printWidth": 120,
-    "semi": false,
-    "trailingComma": "all",
-    "singleQuote": true,
-    "arrowParens": "always"
   },
   "packageManager": "yarn@4.9.1"
 }

@@ -1,0 +1,53 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
+	"files": { "ignoreUnknown": false, "ignore": [] },
+	"formatter": {
+		"enabled": true,
+		"useEditorconfig": true,
+		"formatWithErrors": false,
+		"indentStyle": "space",
+		"indentWidth": 2,
+		"lineEnding": "lf",
+		"lineWidth": 120,
+		"attributePosition": "auto",
+		"bracketSpacing": true,
+		"ignore": ["**/target", "**/.yarn"]
+	},
+	"organizeImports": { "enabled": true },
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": false,
+			"complexity": { "noUselessConstructor": "off" },
+			"correctness": {
+				"noConstAssign": "error",
+				"noInvalidUseBeforeDeclaration": "error",
+				"noSwitchDeclarations": "off",
+				"noUndeclaredVariables": "error",
+				"noUnusedVariables": "off"
+			},
+			"style": { "noVar": "error", "useConst": "error" },
+			"suspicious": {
+				"noConsole": {
+					"level": "error",
+					"options": { "allow": ["error", "warn", "info", "assert"] }
+				},
+				"noDoubleEquals": "error"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"jsxQuoteStyle": "double",
+			"quoteProperties": "asNeeded",
+			"trailingCommas": "all",
+			"semicolons": "asNeeded",
+			"arrowParentheses": "always",
+			"bracketSameLine": false,
+			"quoteStyle": "single",
+			"attributePosition": "auto",
+			"bracketSpacing": true
+		}
+	}
+}

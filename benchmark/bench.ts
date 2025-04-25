@@ -50,4 +50,5 @@ b.add('Rust optimize', () => {
 
 await b.run()
 
+// biome-ignore lint/suspicious/noConsole: <explanation>
 console.table(b.table())

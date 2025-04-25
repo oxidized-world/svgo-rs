@@ -5,6 +5,97 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
+"@biomejs/biome@npm:^1.9.4":
+  version: 1.9.4
+  resolution: "@biomejs/biome@npm:1.9.4"
+  dependencies:
+    "@biomejs/cli-darwin-arm64": "npm:1.9.4"
+    "@biomejs/cli-darwin-x64": "npm:1.9.4"
+    "@biomejs/cli-linux-arm64": "npm:1.9.4"
+    "@biomejs/cli-linux-arm64-musl": "npm:1.9.4"
+    "@biomejs/cli-linux-x64": "npm:1.9.4"
+    "@biomejs/cli-linux-x64-musl": "npm:1.9.4"
+    "@biomejs/cli-win32-arm64": "npm:1.9.4"
+    "@biomejs/cli-win32-x64": "npm:1.9.4"
+  dependenciesMeta:
+    "@biomejs/cli-darwin-arm64":
+      optional: true
+    "@biomejs/cli-darwin-x64":
+      optional: true
+    "@biomejs/cli-linux-arm64":
+      optional: true
+    "@biomejs/cli-linux-arm64-musl":
+      optional: true
+    "@biomejs/cli-linux-x64":
+      optional: true
+    "@biomejs/cli-linux-x64-musl":
+      optional: true
+    "@biomejs/cli-win32-arm64":
+      optional: true
+    "@biomejs/cli-win32-x64":
+      optional: true
+  bin:
+    biome: bin/biome
+  checksum: 10c0/b5655c5aed9a6fffe24f7d04f15ba4444389d0e891c9ed9106fab7388ac9b4be63185852cc2a937b22940dac3e550b71032a4afd306925cfea436c33e5646b3e
+  languageName: node
+  linkType: hard
+
+"@biomejs/cli-darwin-arm64@npm:1.9.4":
+  version: 1.9.4
+  resolution: "@biomejs/cli-darwin-arm64@npm:1.9.4"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@biomejs/cli-darwin-x64@npm:1.9.4":
+  version: 1.9.4
+  resolution: "@biomejs/cli-darwin-x64@npm:1.9.4"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@biomejs/cli-linux-arm64-musl@npm:1.9.4":
+  version: 1.9.4
+  resolution: "@biomejs/cli-linux-arm64-musl@npm:1.9.4"
+  conditions: os=linux & cpu=arm64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@biomejs/cli-linux-arm64@npm:1.9.4":
+  version: 1.9.4
+  resolution: "@biomejs/cli-linux-arm64@npm:1.9.4"
+  conditions: os=linux & cpu=arm64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@biomejs/cli-linux-x64-musl@npm:1.9.4":
+  version: 1.9.4
+  resolution: "@biomejs/cli-linux-x64-musl@npm:1.9.4"
+  conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@biomejs/cli-linux-x64@npm:1.9.4":
+  version: 1.9.4
+  resolution: "@biomejs/cli-linux-x64@npm:1.9.4"
+  conditions: os=linux & cpu=x64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@biomejs/cli-win32-arm64@npm:1.9.4":
+  version: 1.9.4
+  resolution: "@biomejs/cli-win32-arm64@npm:1.9.4"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@biomejs/cli-win32-x64@npm:1.9.4":
+  version: 1.9.4
+  resolution: "@biomejs/cli-win32-x64@npm:1.9.4"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@emnapi/core@npm:^1.4.0":
   version: 1.4.3
   resolution: "@emnapi/core@npm:1.4.3"
@@ -373,62 +464,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oxlint/darwin-arm64@npm:0.16.7":
-  version: 0.16.7
-  resolution: "@oxlint/darwin-arm64@npm:0.16.7"
-  conditions: os=darwin & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"@oxlint/darwin-x64@npm:0.16.7":
-  version: 0.16.7
-  resolution: "@oxlint/darwin-x64@npm:0.16.7"
-  conditions: os=darwin & cpu=x64
-  languageName: node
-  linkType: hard
-
-"@oxlint/linux-arm64-gnu@npm:0.16.7":
-  version: 0.16.7
-  resolution: "@oxlint/linux-arm64-gnu@npm:0.16.7"
-  conditions: os=linux & cpu=arm64 & libc=glibc
-  languageName: node
-  linkType: hard
-
-"@oxlint/linux-arm64-musl@npm:0.16.7":
-  version: 0.16.7
-  resolution: "@oxlint/linux-arm64-musl@npm:0.16.7"
-  conditions: os=linux & cpu=arm64 & libc=musl
-  languageName: node
-  linkType: hard
-
-"@oxlint/linux-x64-gnu@npm:0.16.7":
-  version: 0.16.7
-  resolution: "@oxlint/linux-x64-gnu@npm:0.16.7"
-  conditions: os=linux & cpu=x64 & libc=glibc
-  languageName: node
-  linkType: hard
-
-"@oxlint/linux-x64-musl@npm:0.16.7":
-  version: 0.16.7
-  resolution: "@oxlint/linux-x64-musl@npm:0.16.7"
-  conditions: os=linux & cpu=x64 & libc=musl
-  languageName: node
-  linkType: hard
-
-"@oxlint/win32-arm64@npm:0.16.7":
-  version: 0.16.7
-  resolution: "@oxlint/win32-arm64@npm:0.16.7"
-  conditions: os=win32 & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"@oxlint/win32-x64@npm:0.16.7":
-  version: 0.16.7
-  resolution: "@oxlint/win32-x64@npm:0.16.7"
-  conditions: os=win32 & cpu=x64
-  languageName: node
-  linkType: hard
-
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -573,16 +608,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@svg-rs/svgo@workspace:."
   dependencies:
+    "@biomejs/biome": "npm:^1.9.4"
     "@napi-rs/cli": "npm:^2.18.4"
     "@swc-node/register": "npm:^1.10.10"
     "@swc/core": "npm:^1.11.21"
     "@taplo/cli": "npm:^0.7.0"
-    chalk: "npm:^5.4.1"
     husky: "npm:^9.1.7"
     lint-staged: "npm:^15.5.1"
     npm-run-all2: "npm:^7.0.2"
-    oxlint: "npm:^0.16.7"
-    prettier: "npm:^3.5.3"
     svgo: "npm:^3.3.2"
     tinybench: "npm:^4.0.1"
     typescript: "npm:^5.8.3"
@@ -2070,42 +2103,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oxlint@npm:^0.16.7":
-  version: 0.16.7
-  resolution: "oxlint@npm:0.16.7"
-  dependencies:
-    "@oxlint/darwin-arm64": "npm:0.16.7"
-    "@oxlint/darwin-x64": "npm:0.16.7"
-    "@oxlint/linux-arm64-gnu": "npm:0.16.7"
-    "@oxlint/linux-arm64-musl": "npm:0.16.7"
-    "@oxlint/linux-x64-gnu": "npm:0.16.7"
-    "@oxlint/linux-x64-musl": "npm:0.16.7"
-    "@oxlint/win32-arm64": "npm:0.16.7"
-    "@oxlint/win32-x64": "npm:0.16.7"
-  dependenciesMeta:
-    "@oxlint/darwin-arm64":
-      optional: true
-    "@oxlint/darwin-x64":
-      optional: true
-    "@oxlint/linux-arm64-gnu":
-      optional: true
-    "@oxlint/linux-arm64-musl":
-      optional: true
-    "@oxlint/linux-x64-gnu":
-      optional: true
-    "@oxlint/linux-x64-musl":
-      optional: true
-    "@oxlint/win32-arm64":
-      optional: true
-    "@oxlint/win32-x64":
-      optional: true
-  bin:
-    oxc_language_server: bin/oxc_language_server
-    oxlint: bin/oxlint
-  checksum: 10c0/bf99e03224f7f966f9cbe72750154eb6c73980edd0ea7d010698a2cfab284d5a6efe0ceaab6b8ace4303a60f6a16bb53bdeb04e330fdc964ef154a7ddc80d991
-  languageName: node
-  linkType: hard
-
 "p-map@npm:^7.0.2":
   version: 7.0.3
   resolution: "p-map@npm:7.0.3"
@@ -2203,15 +2200,6 @@ __metadata:
     picocolors: "npm:^1.1.1"
     source-map-js: "npm:^1.2.1"
   checksum: 10c0/c4d90c59c98e8a0c102b77d3f4cac190f883b42d63dc60e2f3ed840f16197c0c8e25a4327d2e9a847b45a985612317dc0534178feeebd0a1cf3eb0eecf75cae4
-  languageName: node
-  linkType: hard
-
-"prettier@npm:^3.5.3":
-  version: 3.5.3
-  resolution: "prettier@npm:3.5.3"
-  bin:
-    prettier: bin/prettier.cjs
-  checksum: 10c0/3880cb90b9dc0635819ab52ff571518c35bd7f15a6e80a2054c05dbc8a3aa6e74f135519e91197de63705bcb38388ded7e7230e2178432a1468005406238b877
   languageName: node
   linkType: hard
 
