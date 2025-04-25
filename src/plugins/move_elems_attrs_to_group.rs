@@ -7,7 +7,7 @@ use std::collections::HashSet;
 
 /// Move common attributes of group children to the group
 ///
-/// ## Example
+/// Example:
 ///
 /// ```svg
 /// <g attr1="val1">

@@ -32,7 +32,15 @@ const inputXml = `
 
 b.add('Javascript optimize', () => {
   optimize(inputXml, {
-    plugins: ['removeDesc', 'removeDoctype', 'removeTitle'],
+    plugins: [
+      'removeDesc',
+      'removeDoctype',
+      'removeTitle',
+      'moveElemsAttrsToGroup',
+      'removeComments',
+      'removeMetadata',
+      'removeXMLProcInst',
+    ],
   })
 })
 
