@@ -49,7 +49,7 @@
     "format": "run-p format:rs format:toml",
     "format:toml": "taplo format",
     "format:rs": "cargo fmt",
-    "lint": "oxlint . --write",
+    "lint": "biome lint --write",
     "prepublishOnly": "napi prepublish -t npm",
     "test": "vitest run",
     "test:watch": "vitest",
