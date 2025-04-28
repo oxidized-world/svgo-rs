@@ -8,18 +8,21 @@ use std::error::Error;
 
 /// <!DOCTYPE ...>
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct XMLAstDoctype<'arena> {
   pub name: &'arena str,
   pub data: XMLAstDoctypeData<'arena>,
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct XMLAstDoctypeData<'arena> {
   pub doctype: &'arena str,
 }
 
 /// <?instruction ...?>
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct XMLAstInstruction<'arena> {
   pub name: &'arena str,
   pub value: &'arena str,
@@ -27,18 +30,21 @@ pub struct XMLAstInstruction<'arena> {
 
 /// <!-- comment -->
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct XMLAstComment<'arena> {
   pub value: &'arena str,
 }
 
 /// <![CDATA[ ... ]]>
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct XMLAstCdata<'arena> {
   pub value: &'arena str,
 }
 
 /// <?xml ... ?>
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct XMLAstDecl<'arena> {
   pub value: &'arena str,
 }

@@ -1,11 +1,10 @@
 [package]
-authors      = ["Jacob <jacob.lcs@qq.com>"]
-edition      = "2021"
-license      = "MIT"
-license-file = "LICENSE"
-name         = "svgo-rs"
-repository   = "https://github.com/oxidized-world/svgo-rs"
-version      = "0.1.0"
+authors    = ["Jacob <jacob.lcs@qq.com>"]
+edition    = "2021"
+license    = "MIT"
+name       = "svgo-rs"
+repository = "https://github.com/oxidized-world/svgo-rs"
+version    = "0.1.0"
 
 [lib]
 crate-type = ["cdylib"]

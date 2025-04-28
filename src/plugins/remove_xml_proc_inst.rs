@@ -1,7 +1,6 @@
 use bumpalo::Bump;
 
 use crate::optimizer::{Plugin, VisitAction};
-use crate::parser::XMLAstInstruction;
 
 /// Remove XML Processing Instruction.
 #[allow(dead_code)]
@@ -18,11 +17,7 @@ impl<'a> RemoveXMLProcInstPlugin<'a> {
 }
 
 impl<'a> Plugin<'a> for RemoveXMLProcInstPlugin<'a> {
-  fn instruction_enter(&self, el: &mut XMLAstInstruction<'a>) -> VisitAction {
-    if el.name == "xml" {
-      VisitAction::Remove
-    } else {
-      VisitAction::Keep
-    }
+  fn decl_enter(&self, _el: &mut crate::parser::XMLAstDecl<'a>) -> VisitAction {
+    VisitAction::Remove
   }
 }
