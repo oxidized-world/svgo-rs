@@ -17,7 +17,7 @@ pub trait Plugin<'a> {
   fn root_exit(&self, _el: &mut XMLAstRoot<'a>) {}
 
   /// return true 表示要把这个 element 从父节点里删掉
-  fn element_enter(&self, _el: &mut XMLAstElement<'a>) -> VisitAction {
+  fn element_enter(&mut self, _el: &mut XMLAstElement<'a>) -> VisitAction {
     VisitAction::Keep
   }
   fn element_exit(&self, _el: &mut XMLAstElement<'a>) {}
@@ -62,7 +62,7 @@ impl<'a> SvgOptimizer<'a> {
     Self { plugins }
   }
 
-  pub fn optimize(&self, root: &mut XMLAstRoot<'a>) -> String {
+  pub fn optimize(&mut self, root: &mut XMLAstRoot<'a>) -> String {
     for plugin in &self.plugins {
       plugin.root_enter(root);
     }
@@ -74,7 +74,7 @@ impl<'a> SvgOptimizer<'a> {
     self.generate_svg(root)
   }
 
-  fn traverse_children(&self, children: &mut BumpVec<'a, XMLAstChild<'a>>) {
+  fn traverse_children(&mut self, children: &mut BumpVec<'a, XMLAstChild<'a>>) {
     let mut i = 0;
     while i < children.len() {
       // Check if any plugin wants to remove this node via the enter hook
@@ -101,7 +101,7 @@ impl<'a> SvgOptimizer<'a> {
           .any(|plugin| plugin.text_enter(el) == VisitAction::Remove),
         XMLAstChild::Element(el) => self
           .plugins
-          .iter()
+          .iter_mut()
           .any(|plugin| plugin.element_enter(el) == VisitAction::Remove),
         // Assuming Decl nodes are never removed by plugins
         XMLAstChild::Decl(el) => self

@@ -12,6 +12,7 @@ use plugins::move_elems_attrs_to_group::{
 use plugins::remove_comments::{RemoveCommentsConfig, RemoveCommentsPlugin};
 use plugins::remove_desc::{RemoveDescPlugin, RemoveDescPluginConfig};
 use plugins::remove_doctype::{RemoveDoctypePlugin, RemoveDoctypePluginConfig};
+use plugins::remove_editors_ns_data::{RemoveEditorsNSData, RemoveEditorsNSDataConfig};
 use plugins::remove_metadata::{RemoveMetadataPlugin, RemoveMetadataPluginConfig};
 use plugins::remove_title::{RemoveTitlePlugin, RemoveTitlePluginConfig};
 use plugins::remove_xml_proc_inst::{RemoveXMLProcInstPlugin, RemoveXMLProcInstPluginConfig};
@@ -24,8 +25,7 @@ pub fn optimize(input_xml: String) -> String {
   }
   let arena = Bump::new();
   let mut root = parse_svg(&input_xml, &arena).unwrap();
-
-  let optimizer = SvgOptimizer::new(vec![
+  let mut optimizer = SvgOptimizer::new(vec![
     Box::new(RemoveDescPlugin::new(
       RemoveDescPluginConfig { remove_any: true },
       &arena,
@@ -51,6 +51,12 @@ pub fn optimize(input_xml: String) -> String {
     )),
     Box::new(MoveElemsAttrsToGroupPlugin::new(
       MoveElemsAttrsToGroupPluginConfig {},
+      &arena,
+    )),
+    Box::new(RemoveEditorsNSData::new(
+      RemoveEditorsNSDataConfig {
+        additional_namespace: None,
+      },
       &arena,
     )),
   ]);
