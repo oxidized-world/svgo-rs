@@ -6,6 +6,7 @@ use bumpalo::Bump;
 use napi_derive::napi;
 use optimizer::SvgOptimizer;
 use parser::parse_svg;
+use plugins::cleanup_attrs::{CleanupAttrs, CleanupAttrsConfigBuilder};
 use plugins::move_elems_attrs_to_group::{
   MoveElemsAttrsToGroupPlugin, MoveElemsAttrsToGroupPluginConfig,
 };
@@ -57,6 +58,10 @@ pub fn optimize(input_xml: String) -> String {
       RemoveEditorsNSDataConfig {
         additional_namespace: None,
       },
+      &arena,
+    )),
+    Box::new(CleanupAttrs::new(
+      CleanupAttrsConfigBuilder::default().build().unwrap(),
       &arena,
     )),
   ]);
