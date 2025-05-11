@@ -13,7 +13,7 @@ pub struct RemoveDoctypePluginConfig {}
 
 impl<'a> RemoveDoctypePlugin<'a> {
   pub fn new(_config: RemoveDoctypePluginConfig, arena: &'a Bump) -> Self {
-    RemoveDoctypePlugin { arena: arena }
+    RemoveDoctypePlugin { arena }
   }
 }
 

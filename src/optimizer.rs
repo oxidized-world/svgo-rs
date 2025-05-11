@@ -202,7 +202,7 @@ impl<'a> SvgOptimizer<'a> {
       }
       XMLAstChild::Text(t) => {
         // 文本节点
-        buf.push_str(&t.value);
+        buf.push_str(t.value);
       }
       XMLAstChild::Comment(c) => {
         // 注释

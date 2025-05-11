@@ -17,7 +17,7 @@ pub struct RemoveCommentsConfig {
 impl<'a> RemoveCommentsPlugin<'a> {
   pub fn new(config: RemoveCommentsConfig, arena: &'a Bump) -> Self {
     RemoveCommentsPlugin {
-      arena: arena,
+      arena,
       preserve_patterns: config
         .preserve_patterns
         .unwrap_or_else(|| vec![Regex::new(r"^!").unwrap()]),
@@ -31,7 +31,7 @@ impl<'a> Plugin<'a> for RemoveCommentsPlugin<'a> {
     for pattern in &self.preserve_patterns {
       // Check if the comment text matches the current pattern
       // Assuming el.value contains the comment text
-      if pattern.is_match(&_el.value) {
+      if pattern.is_match(_el.value) {
         // If it matches, keep the comment and stop checking
         return VisitAction::Keep;
       }

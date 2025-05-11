@@ -56,7 +56,7 @@ impl<'a> Plugin<'a> for CleanupAttrs<'a> {
     // where the second element (value) can be reassigned to a new &'a str
     // allocated in the arena.
     for (_attr_name, attr_value_ref) in el.attributes.iter_mut() {
-      let original_value: &'a str = *attr_value_ref;
+      let original_value: &'a str = attr_value_ref;
       let mut current_value: Cow<'a, str> = Cow::Borrowed(original_value);
 
       let mut modified = false;

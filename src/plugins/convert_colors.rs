@@ -339,7 +339,7 @@ impl<'a> Plugin<'a> for ConvertColorsPlugin<'a> {
         continue;
       }
 
-      let original_value: &'a str = *attr_value_ref;
+      let original_value: &'a str = attr_value_ref;
       let mut current_val_cow: Cow<'a, str> = Cow::Borrowed(original_value);
       let mut modified = false;
 
@@ -500,11 +500,9 @@ impl<'a> Plugin<'a> for ConvertColorsPlugin<'a> {
   }
 
   fn element_exit(&mut self, el: &mut XMLAstElement<'a>) {
-    if el.name == "mask" {
-      if self.mask_counter > 0 {
-        // Should always be true if enter was paired
-        self.mask_counter -= 1;
-      }
+    if el.name == "mask" && self.mask_counter > 0 {
+      // Should always be true if enter was paired
+      self.mask_counter -= 1;
     }
   }
 }
