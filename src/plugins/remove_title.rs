@@ -17,7 +17,7 @@ impl<'a> RemoveTitlePlugin<'a> {
 }
 
 impl<'a> Plugin<'a> for RemoveTitlePlugin<'a> {
-  fn element_enter(&self, el: &mut crate::parser::XMLAstElement<'a>) -> VisitAction {
+  fn element_enter(&mut self, el: &mut crate::parser::XMLAstElement<'a>) -> VisitAction {
     if el.name == "title" {
       VisitAction::Remove
     } else {

@@ -13,7 +13,7 @@ pub struct RemoveEditorsNSData<'a> {
 }
 
 pub struct RemoveEditorsNSDataConfig<'a> {
-  additional_namespace: Option<Vec<&'a str>>,
+  pub additional_namespace: Option<Vec<&'a str>>,
 }
 
 impl<'a> RemoveEditorsNSData<'a> {
@@ -54,49 +54,34 @@ impl<'a> RemoveEditorsNSData<'a> {
 }
 
 impl<'a> Plugin<'a> for RemoveEditorsNSData<'a> {
-  fn element_enter(&self, el: &mut crate::parser::XMLAstElement<'a>) -> VisitAction {
-    // // collect namespace prefixes from svg element
-    // if (node.name === 'svg') {
-    //   for (const [name, value] of Object.entries(node.attributes)) {
-    //     if (name.startsWith('xmlns:') && namespaces.includes(value)) {
-    //       prefixes.push(name.slice('xmlns:'.length));
-    //       // <svg xmlns:sodipodi="">
-    //       delete node.attributes[name];
-    //     }
-    //   }
-    // }
-    // // remove editor attributes, for example
-    // // <* sodipodi:*="">
-    // for (const name of Object.keys(node.attributes)) {
-    //   if (name.includes(':')) {
-    //     const [prefix] = name.split(':');
-    //     if (prefixes.includes(prefix)) {
-    //       delete node.attributes[name];
-    //     }
-    //   }
-    // }
-    // // remove editor elements, for example
-    // // <sodipodi:*>
-    // if (node.name.includes(':')) {
-    //   const [prefix] = node.name.split(':');
-    //   if (prefixes.includes(prefix)) {
-    //     detachNodeFromParent(node, parentNode);
-    //   }
-    // }
-    // if el.name == "svg" {
-    //   el.attributes.iter().for_each(|(name, _)| {
-    //     if name.starts_with("xmlns:")
-    //   });
-    // }
-    // if el.name == "svg" {
-    //   el.attributes.iter().for_each(|(name, value)| {
-    //     if name.starts_with("xmlns:") && self.namespaces.iter().any(|key| key == value) {
-    //       if let Some(prefix) = name.strip_prefix("xmlns:") {
-    //         self.prefixes.push(prefix);
-    //       }
-    //     }
-    //   });
-    // }
+  fn element_enter(&mut self, el: &mut crate::parser::XMLAstElement<'a>) -> VisitAction {
+    // collect namespace prefixes from svg element
+    let prefix = "xmlns:";
+    let prefix_len = prefix.len();
+    if el.name == "svg" {
+      el.attributes.iter().for_each(|(key, value)| {
+        if key.starts_with("xmlns:") && self.namespaces.contains(value) {
+          self.prefixes.push(&key[prefix_len..]);
+        }
+      });
+      el.attributes
+        .retain(|(key, value)| !(key.starts_with("xmlns:") && self.namespaces.contains(value)));
+    }
+    el.attributes.retain(|(key, _)| {
+      if key.contains(":") {
+        let prefix: Vec<&str> = key.split(":").collect();
+        if !prefix.is_empty() && self.prefixes.contains(&prefix[0]) {
+          return false;
+        }
+      }
+      true
+    });
+    if el.name.contains(":") {
+      let split_res: Vec<&str> = el.name.split(":").collect();
+      if !split_res.is_empty() && self.prefixes.contains(&split_res[0]) {
+        return VisitAction::Remove;
+      }
+    }
     VisitAction::Keep
   }
 }

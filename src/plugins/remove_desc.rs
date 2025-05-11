@@ -27,7 +27,7 @@ impl<'a> RemoveDescPlugin<'a> {
 }
 
 impl<'a> Plugin<'a> for RemoveDescPlugin<'a> {
-  fn element_enter(&self, el: &mut XMLAstElement<'a>) -> VisitAction {
+  fn element_enter(&mut self, el: &mut XMLAstElement<'a>) -> VisitAction {
     if el.name == "desc" {
       if self.remove_any {
         return VisitAction::Remove;
