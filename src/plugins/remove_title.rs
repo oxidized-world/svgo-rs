@@ -12,7 +12,7 @@ pub struct RemoveTitlePluginConfig {}
 
 impl<'a> RemoveTitlePlugin<'a> {
   pub fn new(_config: RemoveTitlePluginConfig, arena: &'a Bump) -> Self {
-    RemoveTitlePlugin { arena: arena }
+    RemoveTitlePlugin { arena }
   }
 }
 

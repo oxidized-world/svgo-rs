@@ -35,7 +35,7 @@ impl<'a> MoveElemsAttrsToGroupPlugin<'a> {
   pub fn new(_config: MoveElemsAttrsToGroupPluginConfig, arena: &'a Bump) -> Self {
     MoveElemsAttrsToGroupPlugin {
       has_style_element: false,
-      arena: arena,
+      arena,
     }
   }
 }
@@ -135,7 +135,7 @@ impl<'a> Plugin<'a> for MoveElemsAttrsToGroupPlugin<'a> {
     }
   }
 
-  fn element_exit(&self, el: &mut XMLAstElement<'a>) {
+  fn element_exit(&mut self, el: &mut XMLAstElement<'a>) {
     // Process only groups with more than 1 child
     if el.name != "g" || el.children.len() <= 1 {
       return;

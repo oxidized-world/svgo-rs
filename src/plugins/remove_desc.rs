@@ -20,7 +20,7 @@ pub struct RemoveDescPluginConfig {
 impl<'a> RemoveDescPlugin<'a> {
   pub fn new(config: RemoveDescPluginConfig, arena: &'a Bump) -> Self {
     RemoveDescPlugin {
-      arena: arena,
+      arena,
       remove_any: config.remove_any,
     }
   }
@@ -32,9 +32,9 @@ impl<'a> Plugin<'a> for RemoveDescPlugin<'a> {
       if self.remove_any {
         return VisitAction::Remove;
       }
-      match el.children.get(0) {
+      match el.children.first() {
         None => VisitAction::Remove,
-        Some(XMLAstChild::Text(t)) if is_standard_desc(&t.value) => VisitAction::Remove,
+        Some(XMLAstChild::Text(t)) if is_standard_desc(t.value) => VisitAction::Remove,
         _ => VisitAction::Keep,
       }
     } else {

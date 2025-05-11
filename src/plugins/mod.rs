@@ -1,3 +1,5 @@
+pub mod cleanup_attrs;
+pub mod convert_colors;
 pub mod move_elems_attrs_to_group;
 pub mod remove_comments;
 pub mod remove_desc;
