@@ -20,7 +20,7 @@ pub trait Plugin<'a> {
   fn element_enter(&mut self, _el: &mut XMLAstElement<'a>) -> VisitAction {
     VisitAction::Keep
   }
-  fn element_exit(&self, _el: &mut XMLAstElement<'a>) {}
+  fn element_exit(&mut self, _el: &mut XMLAstElement<'a>) {}
 
   fn text_enter(&self, _el: &mut XMLAstText<'a>) -> VisitAction {
     VisitAction::Keep
@@ -121,7 +121,7 @@ impl<'a> SvgOptimizer<'a> {
         XMLAstChild::Element(el) => {
           // Traverse children before calling exit hooks for the parent
           self.traverse_children(&mut el.children);
-          for plugin in &self.plugins {
+          for plugin in &mut self.plugins {
             plugin.element_exit(el);
           }
         }
