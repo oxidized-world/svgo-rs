@@ -244,12 +244,14 @@ lazy_static! {
 
 // --- Configuration Enums ---
 #[derive(Debug, Clone, PartialEq)]
+#[allow(dead_code)]
 pub enum CaseConvention {
   Lower,
   Upper,
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub enum CurrentColorType {
   Enabled,          // JS `true`
   Specific(String), // JS `string` to match

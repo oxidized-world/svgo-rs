@@ -46,7 +46,7 @@
     "bench": "node --import @swc-node/register/esm-register benchmark/bench.ts",
     "build": "napi build --platform --release",
     "build:debug": "napi build --platform",
-    "format": "format:rs && format:toml",
+    "format": "yarn format:rs && yarn format:toml",
     "format:toml": "taplo format",
     "format:rs": "cargo fmt",
     "lint": "biome lint --write",
