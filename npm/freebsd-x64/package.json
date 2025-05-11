@@ -1,6 +1,6 @@
 {
   "name": "@svg-rs/svgo-freebsd-x64",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "os": [
     "freebsd"
   ],
