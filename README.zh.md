@@ -35,6 +35,63 @@ const optimizedSvg = optimize(inputSvg)
 console.log(optimizedSvg)
 ```
 
+
+## 插件
+
+- [] ddAttributesToSVGElement
+- [] addClassesToSVGElement
+- [] cleanupAttrs
+- [] cleanupEnableBackground
+- [] cleanupIds
+- [] cleanupListOfValues
+- [] cleanupNumericValues
+- [] collapseGroups
+- [] convertColors
+- [] convertEllipseToCircle
+- [] convertOneStopGradients
+- [] convertPathData
+- [] convertShapeToPath
+- [] convertStyleToAttrs
+- [] convertTransform
+- [] inlineStyles
+- [] mergePaths
+- [] mergeStyles
+- [] minifyStyles
+- [x] moveElemsAttrsToGroup
+- [] moveGroupAttrsToElems
+- [] prefixIds
+- [] removeAttributesBySelector
+- [] removeAttrs
+- [x] removeComments
+- [] removeDeprecatedAttrs
+- [x] removeDesc
+- [] removeDimensions
+- [x] removeDoctype
+- [x] removeEditorsNSData
+- [] removeElementsByAttr
+- [] removeEmptyAttrs
+- [] removeEmptyContainers
+- [] removeEmptyText
+- [] removeHiddenElems
+- [x] removeMetadata
+- [] removeNonInheritableGroupAttrs
+- [] removeOffCanvasPaths
+- [] removeRasterImages
+- [] removeScripts
+- [] removeStyleElement
+- [x] removeTitle
+- [] removeUnknownsAndDefaults
+- [] removeUnusedNS
+- [] removeUselessDefs
+- [] removeUselessStrokeAndFill
+- [] removeViewBox
+- [] removeXMLNS
+- [x] removeXMLProcInst
+- [] removeXlink
+- [] reusePaths
+- [] sortAttrs
+- [] sortDefsChildren
+
 ## 基准测试
 
 `svgo-rs` 相较于基于 JavaScript 的 SVG 优化器提供了显著的性能提升。可以在 `benchmark/` 目录中运行基准测试进行比较：

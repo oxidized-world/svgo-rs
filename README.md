@@ -35,6 +35,62 @@ const optimizedSvg = optimize(inputSvg)
 console.log(optimizedSvg)
 ```
 
+## Plugins
+
+- [] ddAttributesToSVGElement
+- [] addClassesToSVGElement
+- [] cleanupAttrs
+- [] cleanupEnableBackground
+- [] cleanupIds
+- [] cleanupListOfValues
+- [] cleanupNumericValues
+- [] collapseGroups
+- [] convertColors
+- [] convertEllipseToCircle
+- [] convertOneStopGradients
+- [] convertPathData
+- [] convertShapeToPath
+- [] convertStyleToAttrs
+- [] convertTransform
+- [] inlineStyles
+- [] mergePaths
+- [] mergeStyles
+- [] minifyStyles
+- [x] moveElemsAttrsToGroup
+- [] moveGroupAttrsToElems
+- [] prefixIds
+- [] removeAttributesBySelector
+- [] removeAttrs
+- [x] removeComments
+- [] removeDeprecatedAttrs
+- [x] removeDesc
+- [] removeDimensions
+- [x] removeDoctype
+- [x] removeEditorsNSData
+- [] removeElementsByAttr
+- [] removeEmptyAttrs
+- [] removeEmptyContainers
+- [] removeEmptyText
+- [] removeHiddenElems
+- [x] removeMetadata
+- [] removeNonInheritableGroupAttrs
+- [] removeOffCanvasPaths
+- [] removeRasterImages
+- [] removeScripts
+- [] removeStyleElement
+- [x] removeTitle
+- [] removeUnknownsAndDefaults
+- [] removeUnusedNS
+- [] removeUselessDefs
+- [] removeUselessStrokeAndFill
+- [] removeViewBox
+- [] removeXMLNS
+- [x] removeXMLProcInst
+- [] removeXlink
+- [] reusePaths
+- [] sortAttrs
+- [] sortDefsChildren
+
 ## Benchmarks
 
 `svgo-rs` provides significant performance improvements over JavaScript-based SVG optimizers. Run the benchmarks in the `benchmark/` directory to compare:
