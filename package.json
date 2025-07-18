@@ -17,22 +17,23 @@
     "index.js"
   ],
   "napi": {
-    "name": "svgo-rs",
-    "triples": {
-      "defaults": true,
-      "additional": [
-        "x86_64-unknown-linux-musl",
-        "aarch64-unknown-linux-gnu",
-        "i686-pc-windows-msvc",
-        "armv7-unknown-linux-gnueabihf",
-        "aarch64-apple-darwin",
-        "aarch64-linux-android",
-        "x86_64-unknown-freebsd",
-        "aarch64-unknown-linux-musl",
-        "aarch64-pc-windows-msvc",
-        "armv7-linux-androideabi"
-      ]
-    }
+    "binaryName": "svgo-rs",
+    "targets": [
+      "x86_64-pc-windows-msvc",
+      "x86_64-apple-darwin",
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-linux-musl",
+      "aarch64-unknown-linux-gnu",
+      "i686-pc-windows-msvc",
+      "armv7-unknown-linux-gnueabihf",
+      "aarch64-apple-darwin",
+      "aarch64-linux-android",
+      "x86_64-unknown-freebsd",
+      "aarch64-unknown-linux-musl",
+      "aarch64-pc-windows-msvc",
+      "armv7-linux-androideabi",
+      "wasm32-wasip1-threads"
+    ]
   },
   "engines": {
     "node": ">= 10"
@@ -54,11 +55,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "version": "napi version",
-    "postinstall": "husky"
+    "prepare": "husky"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@napi-rs/cli": "^2.18.4",
+    "@napi-rs/cli": "^3.0.0",
     "@swc-node/register": "^1.10.10",
     "@swc/core": "^1.11.21",
     "@taplo/cli": "^0.7.0",
@@ -80,5 +81,5 @@
       "cargo fmt --"
     ]
   },
-  "packageManager": "yarn@4.9.1"
+  "packageManager": "yarn@4.9.2"
 }
