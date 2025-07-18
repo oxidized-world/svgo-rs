@@ -1556,6 +1556,7 @@ __metadata:
     "@swc-node/register": "npm:^1.10.10"
     "@swc/core": "npm:^1.11.21"
     "@taplo/cli": "npm:^0.7.0"
+    "@tybys/wasm-util": "npm:^0.10.0"
     husky: "npm:^9.1.7"
     lint-staged: "npm:^15.5.1"
     svgo: "npm:^3.3.2"
