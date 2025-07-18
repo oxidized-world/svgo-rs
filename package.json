@@ -44,7 +44,7 @@
   },
   "scripts": {
     "artifacts": "napi artifacts",
-    "bench": "node --import @swc-node/register/esm-register benchmark/bench.ts",
+    "bench": "node --import @oxc-node/core/register benchmark/bench.ts",
     "build": "napi build --platform --release",
     "build:debug": "napi build --platform",
     "format": "format:rs && format:toml",
@@ -60,8 +60,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@napi-rs/cli": "^3.0.0",
-    "@swc-node/register": "^1.10.10",
-    "@swc/core": "^1.11.21",
+    "@oxc-node/core": "^0.0.29",
     "@taplo/cli": "^0.7.0",
     "@tybys/wasm-util": "^0.10.0",
     "husky": "^9.1.7",
