@@ -38,59 +38,59 @@ console.log(optimizedSvg)
 
 ## 插件
 
-- [] ddAttributesToSVGElement
-- [] addClassesToSVGElement
-- [] cleanupAttrs
-- [] cleanupEnableBackground
-- [] cleanupIds
-- [] cleanupListOfValues
-- [] cleanupNumericValues
-- [] collapseGroups
-- [] convertColors
-- [] convertEllipseToCircle
-- [] convertOneStopGradients
-- [] convertPathData
-- [] convertShapeToPath
-- [] convertStyleToAttrs
-- [] convertTransform
-- [] inlineStyles
-- [] mergePaths
-- [] mergeStyles
-- [] minifyStyles
+- [ ] ddAttributesToSVGElement
+- [ ] addClassesToSVGElement
+- [ ] cleanupAttrs
+- [ ] cleanupEnableBackground
+- [ ] cleanupIds
+- [ ] cleanupListOfValues
+- [ ] cleanupNumericValues
+- [ ] collapseGroups
+- [ ] convertColors
+- [ ] convertEllipseToCircle
+- [ ] convertOneStopGradients
+- [ ] convertPathData
+- [ ] convertShapeToPath
+- [ ] convertStyleToAttrs
+- [ ] convertTransform
+- [ ] inlineStyles
+- [ ] mergePaths
+- [ ] mergeStyles
+- [ ] minifyStyles
 - [x] moveElemsAttrsToGroup
-- [] moveGroupAttrsToElems
-- [] prefixIds
-- [] removeAttributesBySelector
-- [] removeAttrs
+- [ ] moveGroupAttrsToElems
+- [ ] prefixIds
+- [ ] removeAttributesBySelector
+- [ ] removeAttrs
 - [x] removeComments
-- [] removeDeprecatedAttrs
+- [ ] removeDeprecatedAttrs
 - [x] removeDesc
-- [] removeDimensions
+- [ ] removeDimensions
 - [x] removeDoctype
 - [x] removeEditorsNSData
-- [] removeElementsByAttr
-- [] removeEmptyAttrs
-- [] removeEmptyContainers
-- [] removeEmptyText
-- [] removeHiddenElems
+- [ ] removeElementsByAttr
+- [ ] removeEmptyAttrs
+- [ ] removeEmptyContainers
+- [ ] removeEmptyText
+- [ ] removeHiddenElems
 - [x] removeMetadata
-- [] removeNonInheritableGroupAttrs
-- [] removeOffCanvasPaths
-- [] removeRasterImages
-- [] removeScripts
-- [] removeStyleElement
+- [ ] removeNonInheritableGroupAttrs
+- [ ] removeOffCanvasPaths
+- [ ] removeRasterImages
+- [ ] removeScripts
+- [ ] removeStyleElement
 - [x] removeTitle
-- [] removeUnknownsAndDefaults
-- [] removeUnusedNS
-- [] removeUselessDefs
-- [] removeUselessStrokeAndFill
-- [] removeViewBox
-- [] removeXMLNS
+- [ ] removeUnknownsAndDefaults
+- [ ] removeUnusedNS
+- [ ] removeUselessDefs
+- [ ] removeUselessStrokeAndFill
+- [ ] removeViewBox
+- [ ] removeXMLNS
 - [x] removeXMLProcInst
-- [] removeXlink
-- [] reusePaths
-- [] sortAttrs
-- [] sortDefsChildren
+- [ ] removeXlink
+- [ ] reusePaths
+- [ ] sortAttrs
+- [ ] sortDefsChildren
 
 ## 基准测试
 

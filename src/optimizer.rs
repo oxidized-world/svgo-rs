@@ -91,23 +91,20 @@ impl<'a> SvgOptimizer<'a> {
           .plugins
           .iter()
           .any(|plugin| plugin.comment_enter(el) == VisitAction::Remove),
-        XMLAstChild::Cdata(el) => self
-          .plugins
-          .iter()
-          .any(|plugin| plugin.cdata_enter(el) == VisitAction::Remove),
-        XMLAstChild::Text(el) => self
-          .plugins
-          .iter()
-          .any(|plugin| plugin.text_enter(el) == VisitAction::Remove),
+        XMLAstChild::Cdata(el) => {
+          self.plugins.iter().any(|plugin| plugin.cdata_enter(el) == VisitAction::Remove)
+        }
+        XMLAstChild::Text(el) => {
+          self.plugins.iter().any(|plugin| plugin.text_enter(el) == VisitAction::Remove)
+        }
         XMLAstChild::Element(el) => self
           .plugins
           .iter_mut()
           .any(|plugin| plugin.element_enter(el) == VisitAction::Remove),
         // Assuming Decl nodes are never removed by plugins
-        XMLAstChild::Decl(el) => self
-          .plugins
-          .iter()
-          .any(|plugin| plugin.decl_enter(el) == VisitAction::Remove),
+        XMLAstChild::Decl(el) => {
+          self.plugins.iter().any(|plugin| plugin.decl_enter(el) == VisitAction::Remove)
+        }
       };
 
       if should_remove {
