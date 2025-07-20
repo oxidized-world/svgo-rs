@@ -37,7 +37,7 @@ console.log(optimizedSvg)
 
 ## Plugins
 
-- [ ] ddAttributesToSVGElement
+- [ ] addAttributesToSVGElement
 - [ ] addClassesToSVGElement
 - [ ] cleanupAttrs
 - [ ] cleanupEnableBackground

@@ -38,7 +38,7 @@ console.log(optimizedSvg)
 
 ## 插件
 
-- [ ] ddAttributesToSVGElement
+- [ ] addAttributesToSVGElement
 - [ ] addClassesToSVGElement
 - [ ] cleanupAttrs
 - [ ] cleanupEnableBackground
