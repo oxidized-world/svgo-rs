@@ -3,7 +3,7 @@ use bumpalo::Bump;
 use crate::optimizer::Plugin;
 use crate::parser::{XMLAstChild, XMLAstElement};
 use bumpalo::collections::Vec as BumpVec;
-use std::collections::HashSet;
+use phf::{phf_set, Set};
 
 /// Move common attributes of group children to the group
 ///
@@ -41,70 +41,64 @@ impl<'a> MoveElemsAttrsToGroupPlugin<'a> {
 }
 
 // Collection of inheritable attributes that can be moved up to parent groups
-lazy_static::lazy_static! {
-    static ref INHERITABLE_ATTRS: HashSet<&'static str> = {
-        let mut set = HashSet::new();
-        set.insert("clip-rule");
-        set.insert("color-interpolation-filters");
-        set.insert("color-interpolation");
-        set.insert("color-profile");
-        set.insert("color-rendering");
-        set.insert("color");
-        set.insert("cursor");
-        set.insert("direction");
-        set.insert("dominant-baseline");
-        set.insert("fill-opacity");
-        set.insert("fill-rule");
-        set.insert("fill");
-        set.insert("font-family");
-        set.insert("font-size-adjust");
-        set.insert("font-size");
-        set.insert("font-stretch");
-        set.insert("font-style");
-        set.insert("font-variant");
-        set.insert("font-weight");
-        set.insert("font");
-        set.insert("glyph-orientation-horizontal");
-        set.insert("glyph-orientation-vertical");
-        set.insert("image-rendering");
-        set.insert("letter-spacing");
-        set.insert("marker-end");
-        set.insert("marker-mid");
-        set.insert("marker-start");
-        set.insert("marker");
-        set.insert("paint-order");
-        set.insert("pointer-events");
-        set.insert("shape-rendering");
-        set.insert("stroke-dasharray");
-        set.insert("stroke-dashoffset");
-        set.insert("stroke-linecap");
-        set.insert("stroke-linejoin");
-        set.insert("stroke-miterlimit");
-        set.insert("stroke-opacity");
-        set.insert("stroke-width");
-        set.insert("stroke");
-        set.insert("text-anchor");
-        set.insert("text-rendering");
-        set.insert("transform");
-        set.insert("visibility");
-        set.insert("word-spacing");
-        set.insert("writing-mode");
-        set
-    };
+static INHERITABLE_ATTRS: Set<&'static str> = phf_set! {
+  "clip-rule",
+  "color-interpolation-filters",
+  "color-interpolation",
+  "color-profile",
+  "color-rendering",
+  "color",
+  "cursor",
+  "direction",
+  "dominant-baseline",
+  "fill-opacity",
+  "fill-rule",
+  "fill",
+  "font-family",
+  "font-size-adjust",
+  "font-size",
+  "font-stretch",
+  "font-style",
+  "font-variant",
+  "font-weight",
+  "font",
+  "glyph-orientation-horizontal",
+  "glyph-orientation-vertical",
+  "image-rendering",
+  "letter-spacing",
+  "marker-end",
+  "marker-mid",
+  "marker-start",
+  "marker",
+  "paint-order",
+  "pointer-events",
+  "shape-rendering",
+  "stroke-dasharray",
+  "stroke-dashoffset",
+  "stroke-linecap",
+  "stroke-linejoin",
+  "stroke-miterlimit",
+  "stroke-opacity",
+  "stroke-width",
+  "stroke",
+  "text-anchor",
+  "text-rendering",
+  "transform",
+  "visibility",
+  "word-spacing",
+  "writing-mode",
+};
 
-    static ref PATH_ELEMS: HashSet<&'static str> = {
-        let mut set = HashSet::new();
-        set.insert("clip-path");
-        set.insert("display");
-        set.insert("filter");
-        set.insert("mask");
-        set.insert("opacity");
-        set.insert("text-decoration");
-        set.insert("transform");
-        set.insert("unicode-bidi");
-        set
-    };
-}
+static PATH_ELEMS: Set<&'static str> = phf_set! {
+  "clip-path",
+  "display",
+  "filter",
+  "mask",
+  "opacity",
+  "text-decoration",
+  "transform",
+  "unicode-bidi",
+};
 
 impl<'a> Plugin<'a> for MoveElemsAttrsToGroupPlugin<'a> {
   fn root_enter(&self, _el: &mut crate::parser::XMLAstRoot<'a>) {
