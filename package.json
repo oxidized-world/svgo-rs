@@ -65,7 +65,7 @@
     "vitest": "^4.0.18"
   },
   "lint-staged": {
-    "*.@(js|ts|tsx|yml|yaml|json)": [
+    "*.@(js|ts|tsx|json)": [
       "biome lint --write"
     ],
     "*.toml": [

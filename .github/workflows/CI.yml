@@ -9,8 +9,6 @@ permissions:
   id-token: write
 "on":
   push:
-    branches:
-      - main
     tags-ignore:
       - "**"
     paths-ignore:
@@ -265,6 +263,10 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    permissions:
+      contents: write
+      id-token: write
     needs:
       - lint
       - test-macOS-windows-binding
@@ -277,6 +279,7 @@ jobs:
         with:
           node-version: 22
           cache: yarn
+          registry-url: "https://registry.npmjs.org"
       - name: Install dependencies
         run: yarn install
       - name: create npm dirs
@@ -292,18 +295,20 @@ jobs:
         shell: bash
       - name: Publish
         run: |
-          npm config set provenance true
-          if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
-          then
-            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            npm publish --access public
-          elif git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+";
-          then
-            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            npm publish --tag next --access public
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          if [ "$BRANCH_NAME" = "main" ]; then
+            if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
+            then
+              npm publish --provenance --access public
+            elif git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+";
+            then
+              npm publish --provenance --tag next --access public
+            else
+              echo "Not a release, skipping publish"
+            fi
           else
-            echo "Not a release, skipping publish"
+            TAG=$(echo "$BRANCH_NAME" | sed 's/\//-/g')
+            npm publish --provenance --tag "$TAG" --access public
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
