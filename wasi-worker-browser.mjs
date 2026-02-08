@@ -1,17 +1,20 @@
-import { instantiateNapiModuleSync, MessageHandler, WASI } from '@napi-rs/wasm-runtime'
+/** biome-ignore-all lint/suspicious/noConsole: auto-gen */
+import {
+  instantiateNapiModuleSync,
+  MessageHandler,
+  WASI,
+} from "@napi-rs/wasm-runtime";
 
 const handler = new MessageHandler({
   onLoad({ wasmModule, wasmMemory }) {
     const wasi = new WASI({
       print: function () {
-        // eslint-disable-next-line no-console
-        console.log.apply(console, arguments)
+        console.log.apply(console, arguments);
       },
-      printErr: function() {
-        // eslint-disable-next-line no-console
-        console.error.apply(console, arguments)
+      printErr: function () {
+        console.error.apply(console, arguments);
       },
-    })
+    });
     return instantiateNapiModuleSync(wasmModule, {
       childThread: true,
       wasi,
@@ -21,12 +24,12 @@ const handler = new MessageHandler({
           ...importObject.napi,
           ...importObject.emnapi,
           memory: wasmMemory,
-        }
+        };
       },
-    })
+    });
   },
-})
+});
 
 globalThis.onmessage = function (e) {
-  handler.handle(e)
-}
+  handler.handle(e);
+};
