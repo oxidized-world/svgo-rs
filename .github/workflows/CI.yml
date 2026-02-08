@@ -277,7 +277,6 @@ jobs:
         with:
           node-version: 22
           cache: yarn
-          registry-url: "https://registry.npmjs.org"
       - name: Install dependencies
         run: yarn install
       - name: create npm dirs
@@ -297,16 +296,19 @@ jobs:
           if [ "$BRANCH_NAME" = "main" ]; then
             if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
             then
-              npm publish --provenance --access public
+              napi prepublish -t npm
+              npm publish --provenance --access public --ignore-scripts
             elif git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+";
             then
-              npm publish --provenance --tag next --access public
+              napi prepublish -t npm
+              npm publish --provenance --tag next --access public --ignore-scripts
             else
               echo "Not a release, skipping publish"
             fi
           else
             TAG=$(echo "$BRANCH_NAME" | sed 's/\//-/g')
-            npm publish --provenance --tag "$TAG" --access public
+            napi prepublish -t npm --no-gh-release
+            npm publish --provenance --tag "$TAG" --access public --ignore-scripts
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
