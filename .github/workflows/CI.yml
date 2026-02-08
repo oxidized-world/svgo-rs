@@ -9,8 +9,6 @@ permissions:
   id-token: write
 "on":
   push:
-    tags-ignore:
-      - "**"
     paths-ignore:
       - "**/*.md"
       - LICENSE
