@@ -1,7 +1,7 @@
-import { expect, test } from 'vitest'
-import { optimize } from '../index'
+import { expect, test } from "vitest";
+import { optimize } from "../index";
 
-test('sync function from native code', () => {
+test("sync function from native code", () => {
   const inputXml = `
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="100px" height="100px" viewBox="0 0 100 100"
@@ -27,10 +27,10 @@ test('sync function from native code', () => {
                  myeditor:customAttribute="important_shape"/>
     </g>
 </svg>
-`
+`;
 
-  const res = optimize(inputXml)
-  // biome-ignore lint/suspicious/noConsole: <explanation>
-  console.log(res)
-  expect(1).toBe(1)
-})
+  const res = optimize(inputXml);
+  // biome-ignore lint/suspicious/noConsole: debug output in test
+  console.log(res);
+  expect(1).toBe(1);
+});
