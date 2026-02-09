@@ -277,6 +277,8 @@ jobs:
         with:
           node-version: 22
           cache: yarn
+      - name: Upgrade npm for trusted publishing
+        run: npm install -g npm@latest
       - name: Install dependencies
         run: yarn install
       - name: create npm dirs
@@ -297,19 +299,18 @@ jobs:
             if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
             then
               yarn napi prepublish -t npm
-              npm publish --provenance --access public --ignore-scripts
+              npm publish --access public --ignore-scripts
             elif git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+";
             then
               yarn napi prepublish -t npm
-              npm publish --provenance --tag next --access public --ignore-scripts
+              npm publish --tag next --access public --ignore-scripts
             else
               echo "Not a release, skipping publish"
             fi
           else
             TAG=$(echo "$BRANCH_NAME" | sed 's/\//-/g')
             yarn napi prepublish -t npm --no-gh-release
-            npm publish --provenance --tag "$TAG" --access public --ignore-scripts
+            npm publish --tag "$TAG" --access public --ignore-scripts
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_CONFIG_PROVENANCE: "true"
