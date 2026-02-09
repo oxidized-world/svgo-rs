@@ -308,9 +308,13 @@ jobs:
               echo "Not a release, skipping publish"
             fi
           else
-            TAG=$(echo "$BRANCH_NAME" | sed 's/\//-/g')
+            SHORT_SHA=$(git rev-parse --short HEAD)
+            BRANCH_TAG=$(echo "$BRANCH_NAME" | sed 's/\//-/g')
+            CURRENT_VERSION=$(node -p "require('./package.json').version")
+            BETA_VERSION="${CURRENT_VERSION}-beta.${BRANCH_TAG}.${SHORT_SHA}"
+            npm version "$BETA_VERSION" --no-git-tag-version
             yarn napi prepublish -t npm --no-gh-release
-            npm publish --tag "$TAG" --access public --ignore-scripts
+            npm publish --tag beta --access public --ignore-scripts
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
