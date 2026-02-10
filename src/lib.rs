@@ -14,7 +14,6 @@ use plugins::remove_desc::{RemoveDescPlugin, RemoveDescPluginConfig};
 use plugins::remove_doctype::{RemoveDoctypePlugin, RemoveDoctypePluginConfig};
 use plugins::remove_editors_ns_data::{RemoveEditorsNSData, RemoveEditorsNSDataConfig};
 use plugins::remove_metadata::{RemoveMetadataPlugin, RemoveMetadataPluginConfig};
-use plugins::remove_title::{RemoveTitlePlugin, RemoveTitlePluginConfig};
 use plugins::remove_xml_proc_inst::{RemoveXMLProcInstPlugin, RemoveXMLProcInstPluginConfig};
 
 #[napi]
@@ -34,7 +33,6 @@ pub fn optimize(input_xml: String) -> String {
       RemoveDoctypePluginConfig {},
       &arena,
     )),
-    Box::new(RemoveTitlePlugin::new(RemoveTitlePluginConfig {}, &arena)),
     Box::new(RemoveCommentsPlugin::new(
       RemoveCommentsConfig {
         preserve_patterns: None,

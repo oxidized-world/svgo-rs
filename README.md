@@ -22,74 +22,86 @@ npm install @svg-rs/svgo
 ### Node.js
 
 ```javascript
-const { optimize } = require('@svg-rs/svgo')
+const { optimize } = require("@svg-rs/svgo");
 
 const inputSvg = `<svg xmlns="http://www.w3.org/2000/svg">
   <g attr1="val1">
     <desc>Example</desc>
     <circle cx="50" cy="50" r="40"/>
   </g>
-</svg>`
+</svg>`;
 
-const optimizedSvg = optimize(inputSvg)
-console.log(optimizedSvg)
+const optimizedSvg = optimize(inputSvg);
+console.log(optimizedSvg);
 ```
 
 ## Plugins
 
-- [ ] addAttributesToSVGElement
-- [ ] addClassesToSVGElement
+### preset-default
+
+The following plugins are enabled by default, aligned with [svgo v4 preset-default](https://svgo.dev/docs/preset-default/):
+
+- [x] removeDoctype
+- [x] removeXMLProcInst
+- [x] removeComments
+- [ ] removeDeprecatedAttrs
+- [x] removeMetadata
+- [x] removeEditorsNSData
 - [ ] cleanupAttrs
-- [ ] cleanupEnableBackground
-- [ ] cleanupIds
-- [ ] cleanupListOfValues
-- [ ] cleanupNumericValues
-- [ ] collapseGroups
-- [ ] convertColors
-- [ ] convertEllipseToCircle
-- [ ] convertOneStopGradients
-- [ ] convertPathData
-- [ ] convertShapeToPath
-- [ ] convertStyleToAttrs
-- [ ] convertTransform
-- [ ] inlineStyles
-- [ ] mergePaths
 - [ ] mergeStyles
+- [ ] inlineStyles
 - [ ] minifyStyles
+- [ ] cleanupIds
+- [ ] removeUselessDefs
+- [ ] cleanupNumericValues
+- [ ] convertColors
+- [ ] removeUnknownsAndDefaults
+- [ ] removeNonInheritableGroupAttrs
+- [ ] removeUselessStrokeAndFill
+- [ ] cleanupEnableBackground
+- [ ] removeHiddenElems
+- [ ] removeEmptyText
+- [ ] convertShapeToPath
+- [ ] convertEllipseToCircle
 - [x] moveElemsAttrsToGroup
 - [ ] moveGroupAttrsToElems
+- [ ] collapseGroups
+- [ ] convertPathData
+- [ ] convertTransform
+- [ ] removeEmptyAttrs
+- [ ] removeEmptyContainers
+- [ ] mergePaths
+- [ ] removeUnusedNS
+- [ ] sortAttrs
+- [ ] sortDefsChildren
+- [x] removeDesc
+
+### Non-default plugins
+
+The following plugins are implemented but not enabled by default (consistent with svgo v4):
+
+- [x] removeTitle
+
+### Not yet implemented
+
+- [ ] addAttributesToSVGElement
+- [ ] addClassesToSVGElement
+- [ ] cleanupListOfValues
+- [ ] convertOneStopGradients
+- [ ] convertStyleToAttrs
 - [ ] prefixIds
 - [ ] removeAttributesBySelector
 - [ ] removeAttrs
-- [x] removeComments
-- [ ] removeDeprecatedAttrs
-- [x] removeDesc
 - [ ] removeDimensions
-- [x] removeDoctype
-- [x] removeEditorsNSData
 - [ ] removeElementsByAttr
-- [ ] removeEmptyAttrs
-- [ ] removeEmptyContainers
-- [ ] removeEmptyText
-- [ ] removeHiddenElems
-- [x] removeMetadata
-- [ ] removeNonInheritableGroupAttrs
 - [ ] removeOffCanvasPaths
 - [ ] removeRasterImages
 - [ ] removeScripts
 - [ ] removeStyleElement
-- [x] removeTitle
-- [ ] removeUnknownsAndDefaults
-- [ ] removeUnusedNS
-- [ ] removeUselessDefs
-- [ ] removeUselessStrokeAndFill
 - [ ] removeViewBox
 - [ ] removeXMLNS
-- [x] removeXMLProcInst
 - [ ] removeXlink
 - [ ] reusePaths
-- [ ] sortAttrs
-- [ ] sortDefsChildren
 
 ## Benchmarks
 
