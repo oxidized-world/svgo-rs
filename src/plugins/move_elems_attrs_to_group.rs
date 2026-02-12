@@ -1,4 +1,5 @@
 use bumpalo::Bump;
+use std::cell::Cell;
 
 use crate::optimizer::Plugin;
 use crate::parser::{XMLAstChild, XMLAstElement};
@@ -25,7 +26,7 @@ use phf::{phf_set, Set};
 /// </g>
 /// ```
 pub struct MoveElemsAttrsToGroupPlugin<'a> {
-  has_style_element: bool,
+  has_style_element: Cell<bool>,
   arena: &'a Bump,
 }
 
@@ -34,7 +35,7 @@ pub struct MoveElemsAttrsToGroupPluginConfig {}
 impl<'a> MoveElemsAttrsToGroupPlugin<'a> {
   pub fn new(_config: MoveElemsAttrsToGroupPluginConfig, arena: &'a Bump) -> Self {
     MoveElemsAttrsToGroupPlugin {
-      has_style_element: false,
+      has_style_element: Cell::new(false),
       arena: arena,
     }
   }
@@ -89,15 +90,11 @@ static INHERITABLE_ATTRS: Set<&'static str> = phf_set! {
   "writing-mode",
 };
 
+// svgo: pathElems (used to preserve transforms on paths for other plugins)
 static PATH_ELEMS: Set<&'static str> = phf_set! {
-  "clip-path",
-  "display",
-  "filter",
-  "mask",
-  "opacity",
-  "text-decoration",
-  "transform",
-  "unicode-bidi",
+  "glyph",
+  "missing-glyph",
+  "path",
 };
 
 impl<'a> Plugin<'a> for MoveElemsAttrsToGroupPlugin<'a> {
@@ -112,10 +109,7 @@ impl<'a> Plugin<'a> for MoveElemsAttrsToGroupPlugin<'a> {
       match element {
         XMLAstChild::Element(_el) => {
           if _el.name == "style" {
-            let this = self as *const _ as *mut MoveElemsAttrsToGroupPlugin;
-            unsafe {
-              (*this).has_style_element = true;
-            }
+            self.has_style_element.set(true);
             break;
           } else {
             for child in _el.children.iter() {
@@ -136,7 +130,7 @@ impl<'a> Plugin<'a> for MoveElemsAttrsToGroupPlugin<'a> {
     }
 
     // deoptimize when <style> is present
-    if self.has_style_element {
+    if self.has_style_element.get() {
       return;
     }
 
@@ -179,7 +173,8 @@ impl<'a> Plugin<'a> for MoveElemsAttrsToGroupPlugin<'a> {
             }
           }
           // Remove non-common attributes
-          for remove_index in to_remove {
+          // 倒序删除，避免索引位移导致漏删/越界
+          for remove_index in to_remove.into_iter().rev() {
             attrs.remove(remove_index);
           }
         }
@@ -208,35 +203,28 @@ impl<'a> Plugin<'a> for MoveElemsAttrsToGroupPlugin<'a> {
           for (attr_name, attr_value) in el.attributes.iter_mut() {
             if *attr_name == "transform" {
               // Combine transform values
-              let new_value = format!("{} {}", attr_value, value);
-              // Create a string slice in the correct arena (self.arena)
-              *attr_value = bumpalo::format!(in self.arena, "{}", new_value).into_bump_str(); // Corrected arena usage
+              *attr_value =
+                bumpalo::format!(in self.arena, "{} {}", *attr_value, *value).into_bump_str();
               found = true;
               break;
             }
           }
           if !found {
-            // Allocate name and value in the arena before pushing
-            let allocated_name = bumpalo::format!(in self.arena, "{}", name).into_bump_str();
-            let allocated_value = bumpalo::format!(in self.arena, "{}", value).into_bump_str();
-            el.attributes.push((allocated_name, allocated_value));
+            el.attributes.push((*name, *value));
           }
         } else {
-          // Check if attribute already exists in parent
-          let mut exists = false;
-          for (attr_name, _) in &el.attributes {
+          // svgo 行为：把子元素公共属性“提升”到 group，即使 group 已经存在同名属性也要覆盖
+          // 否则后续删除子元素属性会改变渲染结果。
+          let mut updated = false;
+          for (attr_name, attr_value) in el.attributes.iter_mut() {
             if *attr_name == *name {
-              // Dereference attr_name and name for comparison
-              exists = true;
+              *attr_value = *value;
+              updated = true;
               break;
             }
           }
-          // Add attribute if not already present
-          if !exists {
-            // Allocate name and value in the arena before pushing
-            let allocated_name = bumpalo::format!(in self.arena, "{}", name).into_bump_str();
-            let allocated_value = bumpalo::format!(in self.arena, "{}", value).into_bump_str();
-            el.attributes.push((allocated_name, allocated_value));
+          if !updated {
+            el.attributes.push((*name, *value));
           }
         }
       }
@@ -248,11 +236,9 @@ impl<'a> Plugin<'a> for MoveElemsAttrsToGroupPlugin<'a> {
         for child in &mut el.children {
           // Need mutable access
           if let XMLAstChild::Element(child_el) = child {
-            child_el.attributes.retain(|(name, value)| {
-              // Keep the attribute if it's NOT present in common_attrs (matching both name and value)
-              !common_attrs
-                .iter()
-                .any(|(common_name, common_value)| *common_name == *name && *common_value == *value)
+            // svgo 行为：按属性名删除（common_attrs 已保证 value 一致）
+            child_el.attributes.retain(|(name, _)| {
+              !common_attrs.iter().any(|(common_name, _)| *common_name == *name)
             });
           }
         }

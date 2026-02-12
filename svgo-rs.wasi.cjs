@@ -109,3 +109,4 @@ const { instance: __napiInstance, module: __wasiModule, napiModule: __napiModule
 })
 module.exports = __napiModule.exports
 module.exports.optimize = __napiModule.exports.optimize
+module.exports.optimizeWithPlugins = __napiModule.exports.optimizeWithPlugins

@@ -46,7 +46,7 @@
     "format:rs": "cargo fmt",
     "lint": "biome lint --write",
     "prepublishOnly": "napi prepublish -t npm",
-    "test": "vitest run",
+    "test": "yarn build:debug && vitest run",
     "test:watch": "vitest",
     "version": "napi version",
     "prepare": "husky"

@@ -57,6 +57,36 @@ pub struct SvgOptimizer<'a> {
   plugins: Vec<Box<dyn Plugin<'a> + 'a>>,
 }
 
+fn escape_text(input: &str) -> String {
+  // Minimal XML escaping for text nodes.
+  // - Attributes are handled separately.
+  let mut out = String::with_capacity(input.len());
+  for ch in input.chars() {
+    match ch {
+      '&' => out.push_str("&amp;"),
+      '<' => out.push_str("&lt;"),
+      '>' => out.push_str("&gt;"),
+      _ => out.push(ch),
+    }
+  }
+  out
+}
+
+fn escape_attr(input: &str) -> String {
+  // Minimal XML escaping for attribute values.
+  let mut out = String::with_capacity(input.len());
+  for ch in input.chars() {
+    match ch {
+      '&' => out.push_str("&amp;"),
+      '<' => out.push_str("&lt;"),
+      '>' => out.push_str("&gt;"),
+      '"' => out.push_str("&quot;"),
+      _ => out.push(ch),
+    }
+  }
+  out
+}
+
 impl<'a> SvgOptimizer<'a> {
   pub fn new(plugins: Vec<Box<dyn Plugin<'a> + 'a>>) -> Self {
     Self { plugins }
@@ -184,7 +214,8 @@ impl<'a> SvgOptimizer<'a> {
         write!(buf, "<{}", el.name).unwrap();
         // 输出属性
         for (k, v) in &el.attributes {
-          write!(buf, " {}=\"{}\"", k, v).unwrap();
+          let escaped = escape_attr(v);
+          write!(buf, " {}=\"{}\"", k, escaped).unwrap();
         }
         if el.children.is_empty() {
           // 自闭合标签
@@ -199,13 +230,33 @@ impl<'a> SvgOptimizer<'a> {
       }
       XMLAstChild::Text(t) => {
         // 文本节点
-        buf.push_str(&t.value);
+        let escaped = escape_text(t.value);
+        buf.push_str(&escaped);
       }
       XMLAstChild::Comment(c) => {
         // 注释
         write!(buf, "<!--{}-->", c.value).unwrap();
       }
-      _ => {}
+      XMLAstChild::Doctype(d) => {
+        // <!DOCTYPE ...>
+        write!(buf, "<!DOCTYPE {}>", d.data.doctype).unwrap();
+      }
+      XMLAstChild::Instruction(i) => {
+        // <?name value?>
+        if i.value.is_empty() {
+          write!(buf, "<?{}?>", i.name).unwrap();
+        } else {
+          write!(buf, "<?{} {}?>", i.name, i.value).unwrap();
+        }
+      }
+      XMLAstChild::Cdata(cd) => {
+        // <![CDATA[...]]>
+        write!(buf, "<![CDATA[{}]]>", cd.value).unwrap();
+      }
+      XMLAstChild::Decl(decl) => {
+        // <?xml ...?>
+        write!(buf, "<?{}?>", decl.value).unwrap();
+      }
     }
   }
 }
