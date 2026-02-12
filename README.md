@@ -17,78 +17,19 @@ Install the package via npm:
 npm install @svg-rs/svgo
 ```
 
-## Usage
-
-### Node.js
-
-```javascript
-const { optimize } = require("@svg-rs/svgo");
-
-const inputSvg = `<svg xmlns="http://www.w3.org/2000/svg">
-  <g attr1="val1">
-    <desc>Example</desc>
-    <circle cx="50" cy="50" r="40"/>
-  </g>
-</svg>`;
-
-const optimizedSvg = optimize(inputSvg);
-console.log(optimizedSvg);
-```
-
-## Plugins
-
-### preset-default
-
-The following plugins are enabled by default, aligned with [svgo v4 preset-default](https://svgo.dev/docs/preset-default/):
-
-- [x] removeDoctype
-- [x] removeXMLProcInst
-- [x] removeComments
-- [ ] removeDeprecatedAttrs
-- [x] removeMetadata
-- [x] removeEditorsNSData
-- [ ] cleanupAttrs
-- [ ] mergeStyles
-- [ ] inlineStyles
-- [ ] minifyStyles
 - [ ] cleanupIds
 - [ ] removeUselessDefs
 - [ ] cleanupNumericValues
 - [ ] convertColors
 - [ ] removeUnknownsAndDefaults
-- [ ] removeNonInheritableGroupAttrs
-- [ ] removeUselessStrokeAndFill
-- [ ] cleanupEnableBackground
-- [ ] removeHiddenElems
-- [ ] removeEmptyText
-- [ ] convertShapeToPath
-- [ ] convertEllipseToCircle
-- [x] moveElemsAttrsToGroup
-- [ ] moveGroupAttrsToElems
-- [ ] collapseGroups
-- [ ] convertPathData
-- [ ] convertTransform
+- [x] convertPathData
+- [x] convertTransform
 - [ ] removeEmptyAttrs
-- [ ] removeEmptyContainers
-- [ ] mergePaths
-- [ ] removeUnusedNS
-- [ ] sortAttrs
-- [ ] sortDefsChildren
-- [x] removeDesc
 
-### Non-default plugins
-
-The following plugins are implemented but not enabled by default (consistent with svgo v4):
-
-- [x] removeTitle
-
-### Not yet implemented
-
-- [ ] addAttributesToSVGElement
 - [ ] addClassesToSVGElement
 - [ ] cleanupListOfValues
-- [ ] convertOneStopGradients
-- [ ] convertStyleToAttrs
+- [x] convertOneStopGradients
+- [x] convertStyleToAttrs
 - [ ] prefixIds
 - [ ] removeAttributesBySelector
 - [ ] removeAttrs
@@ -102,6 +43,13 @@ The following plugins are implemented but not enabled by default (consistent wit
 - [ ] removeXMLNS
 - [ ] removeXlink
 - [ ] reusePaths
+
+- [x] convertEllipseToCircle
+- [x] convertShapeToPath
+- [x] inlineStyles
+- [x] mergePaths
+- [x] mergeStyles
+- [x] minifyStyles
 
 ## Benchmarks
 

@@ -38,25 +38,25 @@ console.log(optimizedSvg)
 
 ## 插件
 
-- [ ] addAttributesToSVGElement
-- [ ] addClassesToSVGElement
-- [ ] cleanupAttrs
-- [ ] cleanupEnableBackground
-- [ ] cleanupIds
-- [ ] cleanupListOfValues
-- [ ] cleanupNumericValues
-- [ ] collapseGroups
-- [ ] convertColors
-- [ ] convertEllipseToCircle
-- [ ] convertOneStopGradients
-- [ ] convertPathData
-- [ ] convertShapeToPath
-- [ ] convertStyleToAttrs
-- [ ] convertTransform
-- [ ] inlineStyles
-- [ ] mergePaths
-- [ ] mergeStyles
-- [ ] minifyStyles
+- [x] addAttributesToSVGElement
+- [x] addClassesToSVGElement
+- [x] cleanupAttrs
+- [x] cleanupEnableBackground
+- [x] cleanupIds
+- [x] cleanupListOfValues
+- [x] cleanupNumericValues
+- [x] collapseGroups
+- [x] convertColors
+- [x] convertEllipseToCircle
+- [x] convertOneStopGradients
+- [x] convertPathData
+- [x] convertShapeToPath
+- [x] convertStyleToAttrs
+- [x] convertTransform
+- [x] inlineStyles
+- [x] mergePaths
+- [x] mergeStyles
+- [x] minifyStyles
 - [x] moveElemsAttrsToGroup
 - [ ] moveGroupAttrsToElems
 - [ ] prefixIds

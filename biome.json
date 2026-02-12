@@ -3,7 +3,15 @@
   "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!**/wasi-worker-browser.mjs"]
+    "includes": [
+      "**",
+      "!**/wasi-worker-browser.mjs",
+      "!index.d.ts",
+      "!index.js",
+      "!svgo-rs.wasi-browser.js",
+      "!svgo-rs.wasi.cjs",
+      "!wasi-worker.mjs"
+    ]
   },
   "formatter": {
     "enabled": true,

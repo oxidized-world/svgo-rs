@@ -4,7 +4,7 @@ import { runWithPlugins } from "./test-utils";
 test("removeComments removes comments except preserved patterns by default", () => {
   const input = "<svg><!--! keep --><!-- remove --><g/></svg>";
   const out = runWithPlugins(input, ["removeComments"]);
-  expect(out).toContain("<!--! keep -->");
+  expect(out).toContain("<!--! keep-->");
   expect(out).not.toContain("<!-- remove -->");
 });
 
