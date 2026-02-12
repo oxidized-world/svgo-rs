@@ -1,7 +1,10 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.3.14/schema.json",
   "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
-  "files": { "ignoreUnknown": false, "includes": ["**"] },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": ["**", "!**/wasi-worker-browser.mjs"]
+  },
   "formatter": {
     "enabled": true,
     "useEditorconfig": true,
