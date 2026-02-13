@@ -33,3 +33,14 @@ test("addClassesToSVGElement classNames", () => {
   }).data;
   expect(out).toBe(expected);
 });
+
+test("addClassesToSVGElement merges with existing class", () => {
+  const input = '<svg class="base"><g/></svg>';
+  const out = runWithPlugins(input, ["addClassesToSVGElement"], {
+    addClassesToSvgElementClassNames: ["base", "next"],
+  });
+  const expected = optimizeSvgo(input, {
+    plugins: [{ name: "addClassesToSVGElement", params: { classNames: ["base", "next"] } }],
+  }).data;
+  expect(out).toBe(expected);
+});

@@ -15,3 +15,10 @@ test("convertEllipseToCircle keeps eccentric ellipse", () => {
   const expected = optimizeSvgo(input, { plugins: ["convertEllipseToCircle"] }).data;
   expect(out).toBe(expected);
 });
+
+test("convertEllipseToCircle keeps ellipse with missing radii", () => {
+  const input = '<svg><ellipse cx="10" cy="10"/></svg>';
+  const out = runWithPlugins(input, ["convertEllipseToCircle"]);
+  const expected = optimizeSvgo(input, { plugins: ["convertEllipseToCircle"] }).data;
+  expect(out).toBe(expected);
+});

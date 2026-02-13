@@ -15,3 +15,10 @@ test("convertPathData keeps already compact path stable", () => {
   const expected = optimizeSvgo(input, { plugins: ["convertPathData"] }).data;
   expect(out).toBe(expected);
 });
+
+test("convertPathData compresses horizontal and vertical commands", () => {
+  const input = '<svg><path d="M 0 0 H 10 V 10"/></svg>';
+  const out = runWithPlugins(input, ["convertPathData"]);
+  const expected = optimizeSvgo(input, { plugins: ["convertPathData"] }).data;
+  expect(out).toBe(expected);
+});

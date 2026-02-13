@@ -20,3 +20,10 @@ test("convertShapeToPath convertArcs option", () => {
   }).data;
   expect(out).toBe(expected);
 });
+
+test("convertShapeToPath keeps existing path element", () => {
+  const input = '<svg><path d="M0 0L1 1"/></svg>';
+  const out = runWithPlugins(input, ["convertShapeToPath"]);
+  const expected = optimizeSvgo(input, { plugins: ["convertShapeToPath"] }).data;
+  expect(out).toBe(expected);
+});

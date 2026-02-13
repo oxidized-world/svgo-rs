@@ -69,4 +69,59 @@ export interface OptimizeWithPluginsOptions {
   convertStyleToAttrsKeepImportant?: boolean
   /** mergePaths */
   mergePathsForce?: boolean
+  /** prefixIds */
+  prefixIdsPrefix?: string
+  prefixIdsDelim?: string
+  prefixIdsPrefixIds?: boolean
+  prefixIdsPrefixClassNames?: boolean
+  /** removeAttributesBySelector */
+  removeAttributesBySelectorSelector?: string
+  removeAttributesBySelectorAttributes?: Array<string>
+  /** removeAttrs */
+  removeAttrsAttrs?: Array<string>
+  removeAttrsElemSeparator?: string
+  removeAttrsPreserveCurrentColor?: boolean
+  /** removeDeprecatedAttrs */
+  removeDeprecatedAttrsRemoveUnsafe?: boolean
+  /** removeElementsByAttr */
+  removeElementsByAttrId?: Array<string>
+  removeElementsByAttrClass?: Array<string>
+  /** removeEmptyText */
+  removeEmptyTextText?: boolean
+  removeEmptyTextTspan?: boolean
+  removeEmptyTextTref?: boolean
+  /** removeHiddenElems */
+  removeHiddenElemsIsHidden?: boolean
+  removeHiddenElemsDisplayNone?: boolean
+  removeHiddenElemsOpacity0?: boolean
+  removeHiddenElemsCircleR0?: boolean
+  removeHiddenElemsEllipseRx0?: boolean
+  removeHiddenElemsEllipseRy0?: boolean
+  removeHiddenElemsRectWidth0?: boolean
+  removeHiddenElemsRectHeight0?: boolean
+  removeHiddenElemsPatternWidth0?: boolean
+  removeHiddenElemsPatternHeight0?: boolean
+  removeHiddenElemsImageWidth0?: boolean
+  removeHiddenElemsImageHeight0?: boolean
+  removeHiddenElemsPathEmptyD?: boolean
+  removeHiddenElemsPolylineEmptyPoints?: boolean
+  removeHiddenElemsPolygonEmptyPoints?: boolean
+  /** removeUnknownsAndDefaults */
+  removeUnknownsAndDefaultsUnknownContent?: boolean
+  removeUnknownsAndDefaultsUnknownAttrs?: boolean
+  removeUnknownsAndDefaultsDefaultAttrs?: boolean
+  removeUnknownsAndDefaultsDefaultMarkupDeclarations?: boolean
+  removeUnknownsAndDefaultsUselessOverrides?: boolean
+  removeUnknownsAndDefaultsKeepDataAttrs?: boolean
+  removeUnknownsAndDefaultsKeepAriaAttrs?: boolean
+  removeUnknownsAndDefaultsKeepRoleAttr?: boolean
+  /** removeUselessStrokeAndFill */
+  removeUselessStrokeAndFillStroke?: boolean
+  removeUselessStrokeAndFillFill?: boolean
+  removeUselessStrokeAndFillRemoveNone?: boolean
+  /** removeXlink */
+  removeXlinkIncludeLegacy?: boolean
+  /** sortAttrs */
+  sortAttrsOrder?: Array<string>
+  sortAttrsXmlnsOrder?: string
 }

@@ -19,3 +19,10 @@ test("convertStyleToAttrs keepImportant", () => {
   }).data;
   expect(out).toBe(expected);
 });
+
+test("convertStyleToAttrs keeps custom properties in style", () => {
+  const input = '<svg><g style="--x:1;fill:#000"/></svg>';
+  const out = runWithPlugins(input, ["convertStyleToAttrs"]);
+  const expected = optimizeSvgo(input, { plugins: ["convertStyleToAttrs"] }).data;
+  expect(out).toBe(expected);
+});

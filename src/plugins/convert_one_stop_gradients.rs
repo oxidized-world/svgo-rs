@@ -119,6 +119,10 @@ impl<'a> ConvertOneStopGradientsPlugin<'a> {
           removed = true;
         } else {
           Self::remove_gradients(&mut el.children, remove_ids);
+          if el.name == "defs" && el.children.is_empty() {
+            children.remove(i);
+            removed = true;
+          }
         }
       }
       if !removed {

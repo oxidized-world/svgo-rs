@@ -40,13 +40,57 @@ use plugins::minify_styles::{MinifyStylesPlugin, MinifyStylesPluginConfig};
 use plugins::move_elems_attrs_to_group::{
   MoveElemsAttrsToGroupPlugin, MoveElemsAttrsToGroupPluginConfig,
 };
+use plugins::move_group_attrs_to_elems::{
+  MoveGroupAttrsToElemsPlugin, MoveGroupAttrsToElemsPluginConfig,
+};
+use plugins::prefix_ids::{PrefixIdsPlugin, PrefixIdsPluginConfig};
+use plugins::remove_attributes_by_selector::{
+  RemoveAttributesBySelectorPlugin, RemoveAttributesBySelectorPluginConfig,
+};
+use plugins::remove_attrs::{RemoveAttrsPlugin, RemoveAttrsPluginConfig};
 use plugins::remove_comments::{RemoveCommentsConfig, RemoveCommentsPlugin};
+use plugins::remove_deprecated_attrs::{
+  RemoveDeprecatedAttrsPlugin, RemoveDeprecatedAttrsPluginConfig,
+};
 use plugins::remove_desc::{RemoveDescPlugin, RemoveDescPluginConfig};
+use plugins::remove_dimensions::{RemoveDimensionsPlugin, RemoveDimensionsPluginConfig};
 use plugins::remove_doctype::{RemoveDoctypePlugin, RemoveDoctypePluginConfig};
 use plugins::remove_editors_ns_data::{RemoveEditorsNSData, RemoveEditorsNSDataConfig};
+use plugins::remove_elements_by_attr::{
+  RemoveElementsByAttrPlugin, RemoveElementsByAttrPluginConfig,
+};
+use plugins::remove_empty_attrs::{RemoveEmptyAttrsPlugin, RemoveEmptyAttrsPluginConfig};
+use plugins::remove_empty_containers::{
+  RemoveEmptyContainersPlugin, RemoveEmptyContainersPluginConfig,
+};
+use plugins::remove_empty_text::{RemoveEmptyTextPlugin, RemoveEmptyTextPluginConfig};
+use plugins::remove_hidden_elems::{RemoveHiddenElemsPlugin, RemoveHiddenElemsPluginConfig};
 use plugins::remove_metadata::{RemoveMetadataPlugin, RemoveMetadataPluginConfig};
+use plugins::remove_non_inheritable_group_attrs::{
+  RemoveNonInheritableGroupAttrsPlugin, RemoveNonInheritableGroupAttrsPluginConfig,
+};
+use plugins::remove_off_canvas_paths::{
+  RemoveOffCanvasPathsPlugin, RemoveOffCanvasPathsPluginConfig,
+};
+use plugins::remove_raster_images::{RemoveRasterImagesPlugin, RemoveRasterImagesPluginConfig};
+use plugins::remove_scripts::{RemoveScriptsPlugin, RemoveScriptsPluginConfig};
+use plugins::remove_style_element::{RemoveStyleElementPlugin, RemoveStyleElementPluginConfig};
 use plugins::remove_title::{RemoveTitlePlugin, RemoveTitlePluginConfig};
+use plugins::remove_unknowns_and_defaults::{
+  RemoveUnknownsAndDefaultsPlugin, RemoveUnknownsAndDefaultsPluginConfig,
+};
+use plugins::remove_unused_ns::{RemoveUnusedNSPlugin, RemoveUnusedNSPluginConfig};
+use plugins::remove_useless_defs::{RemoveUselessDefsPlugin, RemoveUselessDefsPluginConfig};
+use plugins::remove_useless_stroke_and_fill::{
+  RemoveUselessStrokeAndFillPlugin, RemoveUselessStrokeAndFillPluginConfig,
+};
+use plugins::remove_view_box::{RemoveViewBoxPlugin, RemoveViewBoxPluginConfig};
+use plugins::remove_xlink::{RemoveXlinkPlugin, RemoveXlinkPluginConfig};
 use plugins::remove_xml_proc_inst::{RemoveXMLProcInstPlugin, RemoveXMLProcInstPluginConfig};
+use plugins::remove_xmlns::{RemoveXMLNSPlugin, RemoveXMLNSPluginConfig};
+use plugins::reuse_paths::{ReusePathsPlugin, ReusePathsPluginConfig};
+use plugins::sort_attrs::{SortAttrsPlugin, SortAttrsPluginConfig};
+use plugins::sort_defs_children::{SortDefsChildrenPlugin, SortDefsChildrenPluginConfig};
 use regex::Regex;
 
 #[napi]
@@ -168,6 +212,72 @@ pub struct OptimizeWithPluginsOptions {
 
   /// mergePaths
   pub merge_paths_force: Option<bool>,
+
+  /// prefixIds
+  pub prefix_ids_prefix: Option<String>,
+  pub prefix_ids_delim: Option<String>,
+  pub prefix_ids_prefix_ids: Option<bool>,
+  pub prefix_ids_prefix_class_names: Option<bool>,
+
+  /// removeAttributesBySelector
+  pub remove_attributes_by_selector_selector: Option<String>,
+  pub remove_attributes_by_selector_attributes: Option<Vec<String>>,
+
+  /// removeAttrs
+  pub remove_attrs_attrs: Option<Vec<String>>,
+  pub remove_attrs_elem_separator: Option<String>,
+  pub remove_attrs_preserve_current_color: Option<bool>,
+
+  /// removeDeprecatedAttrs
+  pub remove_deprecated_attrs_remove_unsafe: Option<bool>,
+
+  /// removeElementsByAttr
+  pub remove_elements_by_attr_id: Option<Vec<String>>,
+  pub remove_elements_by_attr_class: Option<Vec<String>>,
+
+  /// removeEmptyText
+  pub remove_empty_text_text: Option<bool>,
+  pub remove_empty_text_tspan: Option<bool>,
+  pub remove_empty_text_tref: Option<bool>,
+
+  /// removeHiddenElems
+  pub remove_hidden_elems_is_hidden: Option<bool>,
+  pub remove_hidden_elems_display_none: Option<bool>,
+  pub remove_hidden_elems_opacity0: Option<bool>,
+  pub remove_hidden_elems_circle_r0: Option<bool>,
+  pub remove_hidden_elems_ellipse_rx0: Option<bool>,
+  pub remove_hidden_elems_ellipse_ry0: Option<bool>,
+  pub remove_hidden_elems_rect_width0: Option<bool>,
+  pub remove_hidden_elems_rect_height0: Option<bool>,
+  pub remove_hidden_elems_pattern_width0: Option<bool>,
+  pub remove_hidden_elems_pattern_height0: Option<bool>,
+  pub remove_hidden_elems_image_width0: Option<bool>,
+  pub remove_hidden_elems_image_height0: Option<bool>,
+  pub remove_hidden_elems_path_empty_d: Option<bool>,
+  pub remove_hidden_elems_polyline_empty_points: Option<bool>,
+  pub remove_hidden_elems_polygon_empty_points: Option<bool>,
+
+  /// removeUnknownsAndDefaults
+  pub remove_unknowns_and_defaults_unknown_content: Option<bool>,
+  pub remove_unknowns_and_defaults_unknown_attrs: Option<bool>,
+  pub remove_unknowns_and_defaults_default_attrs: Option<bool>,
+  pub remove_unknowns_and_defaults_default_markup_declarations: Option<bool>,
+  pub remove_unknowns_and_defaults_useless_overrides: Option<bool>,
+  pub remove_unknowns_and_defaults_keep_data_attrs: Option<bool>,
+  pub remove_unknowns_and_defaults_keep_aria_attrs: Option<bool>,
+  pub remove_unknowns_and_defaults_keep_role_attr: Option<bool>,
+
+  /// removeUselessStrokeAndFill
+  pub remove_useless_stroke_and_fill_stroke: Option<bool>,
+  pub remove_useless_stroke_and_fill_fill: Option<bool>,
+  pub remove_useless_stroke_and_fill_remove_none: Option<bool>,
+
+  /// removeXlink
+  pub remove_xlink_include_legacy: Option<bool>,
+
+  /// sortAttrs
+  pub sort_attrs_order: Option<Vec<String>>,
+  pub sort_attrs_xmlns_order: Option<String>,
 }
 
 #[napi(js_name = "optimizeWithPlugins")]
@@ -363,6 +473,187 @@ pub fn optimize_with_plugins(
     force: options.merge_paths_force.unwrap_or(false),
   };
 
+  let prefix_ids_prefix = options
+    .prefix_ids_prefix
+    .as_ref()
+    .map(|s| s.trim())
+    .filter(|s| !s.is_empty())
+    .map(|s| {
+      let allocated: &mut str = arena.alloc_str(s);
+      &*allocated
+    });
+  let prefix_ids_delim = options
+    .prefix_ids_delim
+    .as_ref()
+    .map(|s| s.trim())
+    .filter(|s| !s.is_empty())
+    .unwrap_or("__");
+  let prefix_ids_delim = {
+    let allocated: &mut str = arena.alloc_str(prefix_ids_delim);
+    &*allocated
+  };
+  let prefix_ids_config = PrefixIdsPluginConfig {
+    prefix: prefix_ids_prefix,
+    delim: prefix_ids_delim,
+    prefix_ids: options.prefix_ids_prefix_ids.unwrap_or(true),
+    prefix_class_names: options.prefix_ids_prefix_class_names.unwrap_or(true),
+  };
+
+  let remove_attributes_by_selector_selector = options
+    .remove_attributes_by_selector_selector
+    .as_ref()
+    .map(|s| s.trim())
+    .filter(|s| !s.is_empty())
+    .map(|s| {
+      let allocated: &mut str = arena.alloc_str(s);
+      &*allocated
+    });
+  let remove_attributes_by_selector_attributes = options
+    .remove_attributes_by_selector_attributes
+    .unwrap_or_default()
+    .into_iter()
+    .map(|s| {
+      let allocated: &mut str = arena.alloc_str(s.trim());
+      &*allocated
+    })
+    .filter(|s| !s.is_empty())
+    .collect::<Vec<&str>>();
+  let remove_attributes_by_selector_config = RemoveAttributesBySelectorPluginConfig {
+    selector: remove_attributes_by_selector_selector,
+    attributes: remove_attributes_by_selector_attributes,
+  };
+
+  let remove_attrs_attrs = options
+    .remove_attrs_attrs
+    .unwrap_or_default()
+    .into_iter()
+    .map(|s| {
+      let allocated: &mut str = arena.alloc_str(s.trim());
+      &*allocated
+    })
+    .filter(|s| !s.is_empty())
+    .collect::<Vec<&str>>();
+  let remove_attrs_elem_separator = options
+    .remove_attrs_elem_separator
+    .as_ref()
+    .map(|s| s.trim())
+    .filter(|s| !s.is_empty())
+    .unwrap_or(":");
+  let remove_attrs_elem_separator = {
+    let allocated: &mut str = arena.alloc_str(remove_attrs_elem_separator);
+    &*allocated
+  };
+  let remove_attrs_config = RemoveAttrsPluginConfig {
+    attrs: remove_attrs_attrs,
+    elem_separator: remove_attrs_elem_separator,
+    preserve_current_color: options.remove_attrs_preserve_current_color.unwrap_or(false),
+  };
+
+  let remove_deprecated_attrs_config = RemoveDeprecatedAttrsPluginConfig {
+    remove_unsafe: options.remove_deprecated_attrs_remove_unsafe.unwrap_or(false),
+  };
+
+  let remove_elements_by_attr_ids = options
+    .remove_elements_by_attr_id
+    .unwrap_or_default()
+    .into_iter()
+    .map(|s| {
+      let allocated: &mut str = arena.alloc_str(s.trim());
+      &*allocated
+    })
+    .filter(|s| !s.is_empty())
+    .collect::<Vec<&str>>();
+  let remove_elements_by_attr_class = options
+    .remove_elements_by_attr_class
+    .unwrap_or_default()
+    .into_iter()
+    .map(|s| {
+      let allocated: &mut str = arena.alloc_str(s.trim());
+      &*allocated
+    })
+    .filter(|s| !s.is_empty())
+    .collect::<Vec<&str>>();
+  let remove_elements_by_attr_config = RemoveElementsByAttrPluginConfig {
+    ids: remove_elements_by_attr_ids,
+    classes: remove_elements_by_attr_class,
+  };
+
+  let remove_empty_text_config = RemoveEmptyTextPluginConfig {
+    text: options.remove_empty_text_text.unwrap_or(true),
+    tspan: options.remove_empty_text_tspan.unwrap_or(true),
+    tref: options.remove_empty_text_tref.unwrap_or(true),
+  };
+
+  let remove_hidden_elems_config = RemoveHiddenElemsPluginConfig {
+    is_hidden: options.remove_hidden_elems_is_hidden.unwrap_or(true),
+    display_none: options.remove_hidden_elems_display_none.unwrap_or(true),
+    opacity0: options.remove_hidden_elems_opacity0.unwrap_or(true),
+    circle_r0: options.remove_hidden_elems_circle_r0.unwrap_or(true),
+    ellipse_rx0: options.remove_hidden_elems_ellipse_rx0.unwrap_or(true),
+    ellipse_ry0: options.remove_hidden_elems_ellipse_ry0.unwrap_or(true),
+    rect_width0: options.remove_hidden_elems_rect_width0.unwrap_or(true),
+    rect_height0: options.remove_hidden_elems_rect_height0.unwrap_or(true),
+    pattern_width0: options.remove_hidden_elems_pattern_width0.unwrap_or(true),
+    pattern_height0: options.remove_hidden_elems_pattern_height0.unwrap_or(true),
+    image_width0: options.remove_hidden_elems_image_width0.unwrap_or(true),
+    image_height0: options.remove_hidden_elems_image_height0.unwrap_or(true),
+    path_empty_d: options.remove_hidden_elems_path_empty_d.unwrap_or(true),
+    polyline_empty_points: options.remove_hidden_elems_polyline_empty_points.unwrap_or(true),
+    polygon_empty_points: options.remove_hidden_elems_polygon_empty_points.unwrap_or(true),
+  };
+
+  let remove_unknowns_and_defaults_config = RemoveUnknownsAndDefaultsPluginConfig {
+    unknown_content: options.remove_unknowns_and_defaults_unknown_content.unwrap_or(true),
+    unknown_attrs: options.remove_unknowns_and_defaults_unknown_attrs.unwrap_or(true),
+    default_attrs: options.remove_unknowns_and_defaults_default_attrs.unwrap_or(true),
+    default_markup_declarations: options
+      .remove_unknowns_and_defaults_default_markup_declarations
+      .unwrap_or(true),
+    useless_overrides: options.remove_unknowns_and_defaults_useless_overrides.unwrap_or(true),
+    keep_data_attrs: options.remove_unknowns_and_defaults_keep_data_attrs.unwrap_or(true),
+    keep_aria_attrs: options.remove_unknowns_and_defaults_keep_aria_attrs.unwrap_or(true),
+    keep_role_attr: options.remove_unknowns_and_defaults_keep_role_attr.unwrap_or(false),
+  };
+
+  let remove_useless_stroke_and_fill_config = RemoveUselessStrokeAndFillPluginConfig {
+    stroke: options.remove_useless_stroke_and_fill_stroke.unwrap_or(true),
+    fill: options.remove_useless_stroke_and_fill_fill.unwrap_or(true),
+    remove_none: options.remove_useless_stroke_and_fill_remove_none.unwrap_or(false),
+  };
+
+  let remove_xlink_config = RemoveXlinkPluginConfig {
+    include_legacy: options.remove_xlink_include_legacy.unwrap_or(false),
+  };
+
+  let sort_attrs_default_order = vec![
+    "id", "width", "height", "x", "x1", "x2", "y", "y1", "y2", "cx", "cy", "r", "fill", "stroke",
+    "marker", "d", "points",
+  ];
+  let sort_attrs_order = options
+    .sort_attrs_order
+    .unwrap_or(sort_attrs_default_order.into_iter().map(String::from).collect())
+    .into_iter()
+    .map(|s| {
+      let allocated: &mut str = arena.alloc_str(s.trim());
+      &*allocated
+    })
+    .filter(|s| !s.is_empty())
+    .collect::<Vec<&str>>();
+  let sort_attrs_xmlns_order = options
+    .sort_attrs_xmlns_order
+    .as_ref()
+    .map(|s| s.trim())
+    .filter(|s| !s.is_empty())
+    .unwrap_or("front");
+  let sort_attrs_xmlns_order = {
+    let allocated: &mut str = arena.alloc_str(sort_attrs_xmlns_order);
+    &*allocated
+  };
+  let sort_attrs_config = SortAttrsPluginConfig {
+    order: sort_attrs_order,
+    xmlns_order: sort_attrs_xmlns_order,
+  };
+
   let mut plugins: Vec<Box<dyn Plugin<'_> + '_>> = Vec::new();
   for name in options.plugins {
     match name.as_str() {
@@ -394,14 +685,180 @@ pub fn optimize_with_plugins(
         MoveElemsAttrsToGroupPluginConfig {},
         &arena,
       ))),
+      "moveGroupAttrsToElems" => plugins.push(Box::new(MoveGroupAttrsToElemsPlugin::new(
+        MoveGroupAttrsToElemsPluginConfig {},
+        &arena,
+      ))),
+      "prefixIds" => plugins.push(Box::new(PrefixIdsPlugin::new(
+        PrefixIdsPluginConfig {
+          prefix: prefix_ids_config.prefix,
+          delim: prefix_ids_config.delim,
+          prefix_ids: prefix_ids_config.prefix_ids,
+          prefix_class_names: prefix_ids_config.prefix_class_names,
+        },
+        &arena,
+      ))),
+      "removeAttributesBySelector" => {
+        plugins.push(Box::new(RemoveAttributesBySelectorPlugin::new(
+          RemoveAttributesBySelectorPluginConfig {
+            selector: remove_attributes_by_selector_config.selector,
+            attributes: remove_attributes_by_selector_config.attributes.clone(),
+          },
+          &arena,
+        )))
+      }
+      "removeAttrs" => plugins.push(Box::new(RemoveAttrsPlugin::new(
+        RemoveAttrsPluginConfig {
+          attrs: remove_attrs_config.attrs.clone(),
+          elem_separator: remove_attrs_config.elem_separator,
+          preserve_current_color: remove_attrs_config.preserve_current_color,
+        },
+        &arena,
+      ))),
       "removeEditorsNSData" => plugins.push(Box::new(RemoveEditorsNSData::new(
         RemoveEditorsNSDataConfig {
           additional_namespace: remove_editors_additional.clone(),
         },
         &arena,
       ))),
+      "removeDeprecatedAttrs" => plugins.push(Box::new(RemoveDeprecatedAttrsPlugin::new(
+        RemoveDeprecatedAttrsPluginConfig {
+          remove_unsafe: remove_deprecated_attrs_config.remove_unsafe,
+        },
+        &arena,
+      ))),
       "removeTitle" => plugins.push(Box::new(RemoveTitlePlugin::new(
         RemoveTitlePluginConfig {},
+        &arena,
+      ))),
+      "removeDimensions" => plugins.push(Box::new(RemoveDimensionsPlugin::new(
+        RemoveDimensionsPluginConfig {},
+        &arena,
+      ))),
+      "removeElementsByAttr" => plugins.push(Box::new(RemoveElementsByAttrPlugin::new(
+        RemoveElementsByAttrPluginConfig {
+          ids: remove_elements_by_attr_config.ids.clone(),
+          classes: remove_elements_by_attr_config.classes.clone(),
+        },
+        &arena,
+      ))),
+      "removeEmptyAttrs" => plugins.push(Box::new(RemoveEmptyAttrsPlugin::new(
+        RemoveEmptyAttrsPluginConfig {},
+        &arena,
+      ))),
+      "removeEmptyContainers" => plugins.push(Box::new(RemoveEmptyContainersPlugin::new(
+        RemoveEmptyContainersPluginConfig {},
+        &arena,
+      ))),
+      "removeEmptyText" => plugins.push(Box::new(RemoveEmptyTextPlugin::new(
+        RemoveEmptyTextPluginConfig {
+          text: remove_empty_text_config.text,
+          tspan: remove_empty_text_config.tspan,
+          tref: remove_empty_text_config.tref,
+        },
+        &arena,
+      ))),
+      "removeHiddenElems" => plugins.push(Box::new(RemoveHiddenElemsPlugin::new(
+        RemoveHiddenElemsPluginConfig {
+          is_hidden: remove_hidden_elems_config.is_hidden,
+          display_none: remove_hidden_elems_config.display_none,
+          opacity0: remove_hidden_elems_config.opacity0,
+          circle_r0: remove_hidden_elems_config.circle_r0,
+          ellipse_rx0: remove_hidden_elems_config.ellipse_rx0,
+          ellipse_ry0: remove_hidden_elems_config.ellipse_ry0,
+          rect_width0: remove_hidden_elems_config.rect_width0,
+          rect_height0: remove_hidden_elems_config.rect_height0,
+          pattern_width0: remove_hidden_elems_config.pattern_width0,
+          pattern_height0: remove_hidden_elems_config.pattern_height0,
+          image_width0: remove_hidden_elems_config.image_width0,
+          image_height0: remove_hidden_elems_config.image_height0,
+          path_empty_d: remove_hidden_elems_config.path_empty_d,
+          polyline_empty_points: remove_hidden_elems_config.polyline_empty_points,
+          polygon_empty_points: remove_hidden_elems_config.polygon_empty_points,
+        },
+        &arena,
+      ))),
+      "removeNonInheritableGroupAttrs" => {
+        plugins.push(Box::new(RemoveNonInheritableGroupAttrsPlugin::new(
+          RemoveNonInheritableGroupAttrsPluginConfig {},
+          &arena,
+        )))
+      }
+      "removeOffCanvasPaths" => plugins.push(Box::new(RemoveOffCanvasPathsPlugin::new(
+        RemoveOffCanvasPathsPluginConfig {},
+        &arena,
+      ))),
+      "removeRasterImages" => plugins.push(Box::new(RemoveRasterImagesPlugin::new(
+        RemoveRasterImagesPluginConfig {},
+        &arena,
+      ))),
+      "removeScripts" => plugins.push(Box::new(RemoveScriptsPlugin::new(
+        RemoveScriptsPluginConfig {},
+        &arena,
+      ))),
+      "removeStyleElement" => plugins.push(Box::new(RemoveStyleElementPlugin::new(
+        RemoveStyleElementPluginConfig {},
+        &arena,
+      ))),
+      "removeUnknownsAndDefaults" => plugins.push(Box::new(RemoveUnknownsAndDefaultsPlugin::new(
+        RemoveUnknownsAndDefaultsPluginConfig {
+          unknown_content: remove_unknowns_and_defaults_config.unknown_content,
+          unknown_attrs: remove_unknowns_and_defaults_config.unknown_attrs,
+          default_attrs: remove_unknowns_and_defaults_config.default_attrs,
+          default_markup_declarations: remove_unknowns_and_defaults_config
+            .default_markup_declarations,
+          useless_overrides: remove_unknowns_and_defaults_config.useless_overrides,
+          keep_data_attrs: remove_unknowns_and_defaults_config.keep_data_attrs,
+          keep_aria_attrs: remove_unknowns_and_defaults_config.keep_aria_attrs,
+          keep_role_attr: remove_unknowns_and_defaults_config.keep_role_attr,
+        },
+        &arena,
+      ))),
+      "removeUnusedNS" => plugins.push(Box::new(RemoveUnusedNSPlugin::new(
+        RemoveUnusedNSPluginConfig {},
+        &arena,
+      ))),
+      "removeUselessDefs" => plugins.push(Box::new(RemoveUselessDefsPlugin::new(
+        RemoveUselessDefsPluginConfig {},
+        &arena,
+      ))),
+      "removeUselessStrokeAndFill" => {
+        plugins.push(Box::new(RemoveUselessStrokeAndFillPlugin::new(
+          RemoveUselessStrokeAndFillPluginConfig {
+            stroke: remove_useless_stroke_and_fill_config.stroke,
+            fill: remove_useless_stroke_and_fill_config.fill,
+            remove_none: remove_useless_stroke_and_fill_config.remove_none,
+          },
+          &arena,
+        )))
+      }
+      "removeViewBox" => plugins.push(Box::new(RemoveViewBoxPlugin::new(
+        RemoveViewBoxPluginConfig {},
+        &arena,
+      ))),
+      "removeXMLNS" => plugins.push(Box::new(RemoveXMLNSPlugin::new(
+        RemoveXMLNSPluginConfig {},
+        &arena,
+      ))),
+      "removeXlink" => plugins.push(Box::new(RemoveXlinkPlugin::new(
+        RemoveXlinkPluginConfig {
+          include_legacy: remove_xlink_config.include_legacy,
+        },
+        &arena,
+      ))),
+      "reusePaths" => plugins.push(Box::new(ReusePathsPlugin::new(
+        ReusePathsPluginConfig {},
+        &arena,
+      ))),
+      "sortAttrs" => plugins.push(Box::new(SortAttrsPlugin::new(
+        SortAttrsPluginConfig {
+          order: sort_attrs_config.order.clone(),
+          xmlns_order: sort_attrs_config.xmlns_order,
+        },
+        &arena,
+      ))),
+      "sortDefsChildren" => plugins.push(Box::new(SortDefsChildrenPlugin::new(
+        SortDefsChildrenPluginConfig {},
         &arena,
       ))),
       "addAttributesToSVGElement" => {

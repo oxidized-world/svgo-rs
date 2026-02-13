@@ -15,3 +15,10 @@ test("cleanupEnableBackground keeps/cleans with filter", () => {
   const expected = optimizeSvgo(input, { plugins: ["cleanupEnableBackground"] }).data;
   expect(out).toBe(expected);
 });
+
+test("cleanupEnableBackground no-op without attribute", () => {
+  const input = '<svg width="100" height="50"><filter id="f"/></svg>';
+  const out = runWithPlugins(input, ["cleanupEnableBackground"]);
+  const expected = optimizeSvgo(input, { plugins: ["cleanupEnableBackground"] }).data;
+  expect(out).toBe(expected);
+});

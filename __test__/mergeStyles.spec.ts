@@ -17,3 +17,10 @@ test("mergeStyles skips foreignObject subtree", () => {
   const expected = optimizeSvgo(input, { plugins: ["mergeStyles"] }).data;
   expect(out).toBe(expected);
 });
+
+test("mergeStyles keeps single style unchanged", () => {
+  const input = '<svg><style>.a{fill:red}</style><rect class="a"/></svg>';
+  const out = runWithPlugins(input, ["mergeStyles"]);
+  const expected = optimizeSvgo(input, { plugins: ["mergeStyles"] }).data;
+  expect(out).toBe(expected);
+});

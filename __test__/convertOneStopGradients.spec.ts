@@ -16,3 +16,11 @@ test("convertOneStopGradients no-op without gradients", () => {
   const expected = optimizeSvgo(input, { plugins: ["convertOneStopGradients"] }).data;
   expect(out).toBe(expected);
 });
+
+test("convertOneStopGradients converts referenced one-stop gradient", () => {
+  const input =
+    '<svg><defs><linearGradient id="g"><stop offset="0" stop-color="red"/></linearGradient></defs><rect fill="url(#g)"/></svg>';
+  const out = runWithPlugins(input, ["convertOneStopGradients"]);
+  const expected = optimizeSvgo(input, { plugins: ["convertOneStopGradients"] }).data;
+  expect(out).toBe(expected);
+});

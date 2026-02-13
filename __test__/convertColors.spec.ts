@@ -36,3 +36,14 @@ test("convertColors options", () => {
   }).data;
   expect(out).toBe(expected);
 });
+
+test("convertColors supports currentColor string option", () => {
+  const input = '<svg><rect fill="red" stroke="red"/></svg>';
+  const out = runWithPlugins(input, ["convertColors"], {
+    convertColorsCurrentColor: "red",
+  });
+  const expected = optimizeSvgo(input, {
+    plugins: [{ name: "convertColors", params: { currentColor: "red" } }],
+  }).data;
+  expect(out).toBe(expected);
+});

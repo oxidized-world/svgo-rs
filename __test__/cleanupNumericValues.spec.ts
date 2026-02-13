@@ -32,3 +32,10 @@ test("cleanupNumericValues options", () => {
   }).data;
   expect(out).toBe(expected);
 });
+
+test("cleanupNumericValues handles scientific notation", () => {
+  const input = '<svg><rect width="1e2" height="5e1"/></svg>';
+  const out = runWithPlugins(input, ["cleanupNumericValues"]);
+  const expected = optimizeSvgo(input, { plugins: ["cleanupNumericValues"] }).data;
+  expect(out).toBe(expected);
+});

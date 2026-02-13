@@ -28,3 +28,10 @@ test("cleanupAttrs options", () => {
   }).data;
   expect(out).toBe(expected);
 });
+
+test("cleanupAttrs keeps already normalized attrs stable", () => {
+  const input = '<svg><g data-v="a b"/></svg>';
+  const out = runWithPlugins(input, ["cleanupAttrs"]);
+  const expected = optimizeSvgo(input, { plugins: ["cleanupAttrs"] }).data;
+  expect(out).toBe(expected);
+});

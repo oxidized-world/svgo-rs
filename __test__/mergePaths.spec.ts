@@ -15,3 +15,14 @@ test("mergePaths keeps paths with different attrs", () => {
   const expected = optimizeSvgo(input, { plugins: ["mergePaths"] }).data;
   expect(out).toBe(expected);
 });
+
+test("mergePaths respects force option", () => {
+  const input = '<svg><path d="M0 0"/><path d="M1 1" stroke="red"/></svg>';
+  const out = runWithPlugins(input, ["mergePaths"], {
+    mergePathsForce: true,
+  });
+  const expected = optimizeSvgo(input, {
+    plugins: [{ name: "mergePaths", params: { force: true } }],
+  }).data;
+  expect(out).toBe(expected);
+});

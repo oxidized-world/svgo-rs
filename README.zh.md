@@ -58,39 +58,39 @@ console.log(optimizedSvg)
 - [x] mergeStyles
 - [x] minifyStyles
 - [x] moveElemsAttrsToGroup
-- [ ] moveGroupAttrsToElems
-- [ ] prefixIds
-- [ ] removeAttributesBySelector
-- [ ] removeAttrs
+- [x] moveGroupAttrsToElems
+- [x] prefixIds
+- [x] removeAttributesBySelector
+- [x] removeAttrs
 - [x] removeComments
-- [ ] removeDeprecatedAttrs
+- [x] removeDeprecatedAttrs
 - [x] removeDesc
-- [ ] removeDimensions
+- [x] removeDimensions
 - [x] removeDoctype
 - [x] removeEditorsNSData
-- [ ] removeElementsByAttr
-- [ ] removeEmptyAttrs
-- [ ] removeEmptyContainers
-- [ ] removeEmptyText
-- [ ] removeHiddenElems
+- [x] removeElementsByAttr
+- [x] removeEmptyAttrs
+- [x] removeEmptyContainers
+- [x] removeEmptyText
+- [x] removeHiddenElems
 - [x] removeMetadata
-- [ ] removeNonInheritableGroupAttrs
-- [ ] removeOffCanvasPaths
-- [ ] removeRasterImages
-- [ ] removeScripts
-- [ ] removeStyleElement
+- [x] removeNonInheritableGroupAttrs
+- [x] removeOffCanvasPaths
+- [x] removeRasterImages
+- [x] removeScripts
+- [x] removeStyleElement
 - [x] removeTitle
-- [ ] removeUnknownsAndDefaults
-- [ ] removeUnusedNS
-- [ ] removeUselessDefs
-- [ ] removeUselessStrokeAndFill
-- [ ] removeViewBox
-- [ ] removeXMLNS
+- [x] removeUnknownsAndDefaults
+- [x] removeUnusedNS
+- [x] removeUselessDefs
+- [x] removeUselessStrokeAndFill
+- [x] removeViewBox
+- [x] removeXMLNS
 - [x] removeXMLProcInst
-- [ ] removeXlink
-- [ ] reusePaths
-- [ ] sortAttrs
-- [ ] sortDefsChildren
+- [x] removeXlink
+- [x] reusePaths
+- [x] sortAttrs
+- [x] sortDefsChildren
 
 ## 基准测试
 

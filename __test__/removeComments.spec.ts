@@ -1,4 +1,5 @@
 import { expect, test } from "vitest";
+import { optimize as optimizeSvgo } from "svgo";
 import { runWithPlugins } from "./test-utils";
 
 test("removeComments removes comments except preserved patterns by default", () => {
@@ -15,4 +16,15 @@ test("removeComments can disable preservePatterns (remove all comments)", () => 
   });
   expect(out).not.toContain("<!--! keep -->");
   expect(out).not.toContain("<!-- remove -->");
+});
+
+test("removeComments supports custom preservePatterns", () => {
+  const input = "<svg><!-- KEEP_ME --><!-- drop --></svg>";
+  const out = runWithPlugins(input, ["removeComments"], {
+    removeCommentsPreservePatterns: ["KEEP_ME"],
+  });
+  const expected = optimizeSvgo(input, {
+    plugins: [{ name: "removeComments", params: { preservePatterns: ["KEEP_ME"] } }],
+  }).data;
+  expect(out).toBe(expected);
 });

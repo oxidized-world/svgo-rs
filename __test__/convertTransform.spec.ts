@@ -15,3 +15,10 @@ test("convertTransform removes identity matrix", () => {
   const expected = optimizeSvgo(input, { plugins: ["convertTransform"] }).data;
   expect(out).toBe(expected);
 });
+
+test("convertTransform normalizes rotate with center", () => {
+  const input = '<svg><g transform="rotate(45, 10, 10)"/></svg>';
+  const out = runWithPlugins(input, ["convertTransform"]);
+  const expected = optimizeSvgo(input, { plugins: ["convertTransform"] }).data;
+  expect(out).toBe(expected);
+});

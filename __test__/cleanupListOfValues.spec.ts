@@ -32,3 +32,10 @@ test("cleanupListOfValues options", () => {
   }).data;
   expect(out).toBe(expected);
 });
+
+test("cleanupListOfValues handles mixed separators", () => {
+  const input = '<svg><polyline points="0,0, 10,10 20,20"/></svg>';
+  const out = runWithPlugins(input, ["cleanupListOfValues"]);
+  const expected = optimizeSvgo(input, { plugins: ["cleanupListOfValues"] }).data;
+  expect(out).toBe(expected);
+});
