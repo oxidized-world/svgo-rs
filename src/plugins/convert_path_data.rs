@@ -36,9 +36,12 @@ impl<'a> ConvertPathDataPlugin<'a> {
     }
   }
 
+  fn token_to_f64(token: &str) -> Option<f64> {
+    token.parse::<f64>().ok()
+  }
+
   fn minify_d(&self, value: &str) -> String {
-    let tokens: Vec<String> =
-      self.reg_token.find_iter(value).map(|m| m.as_str().to_string()).collect();
+    let tokens: Vec<&str> = self.reg_token.find_iter(value).map(|m| m.as_str()).collect();
 
     if tokens.is_empty() {
       return value.trim().to_string();
@@ -52,7 +55,7 @@ impl<'a> ConvertPathDataPlugin<'a> {
     let mut emitted_commands = 0usize;
 
     while i < tokens.len() {
-      let token = &tokens[i];
+      let token = tokens[i];
       let Some(cmd) = token.chars().next() else {
         i += 1;
         continue;
@@ -68,8 +71,8 @@ impl<'a> ConvertPathDataPlugin<'a> {
           if i + 1 >= tokens.len() {
             break;
           }
-          let x = tokens[i].parse::<f64>().ok();
-          let y = tokens[i + 1].parse::<f64>().ok();
+          let x = Self::token_to_f64(tokens[i]);
+          let y = Self::token_to_f64(tokens[i + 1]);
           let (Some(x), Some(y)) = (x, y) else {
             break;
           };
@@ -103,8 +106,8 @@ impl<'a> ConvertPathDataPlugin<'a> {
             if tokens[i].chars().next().map(|ch| ch.is_ascii_alphabetic()).unwrap_or(false) {
               break;
             }
-            let x = tokens[i].parse::<f64>().ok();
-            let y = tokens[i + 1].parse::<f64>().ok();
+            let x = Self::token_to_f64(tokens[i]);
+            let y = Self::token_to_f64(tokens[i + 1]);
             let (Some(x), Some(y)) = (x, y) else {
               break;
             };
@@ -135,7 +138,7 @@ impl<'a> ConvertPathDataPlugin<'a> {
             if tokens[i].chars().next().map(|ch| ch.is_ascii_alphabetic()).unwrap_or(false) {
               break;
             }
-            let x = tokens[i].parse::<f64>().ok();
+            let x = Self::token_to_f64(tokens[i]);
             let Some(x) = x else {
               break;
             };
@@ -157,7 +160,7 @@ impl<'a> ConvertPathDataPlugin<'a> {
             if tokens[i].chars().next().map(|ch| ch.is_ascii_alphabetic()).unwrap_or(false) {
               break;
             }
-            let y = tokens[i].parse::<f64>().ok();
+            let y = Self::token_to_f64(tokens[i]);
             let Some(y) = y else {
               break;
             };
@@ -180,7 +183,7 @@ impl<'a> ConvertPathDataPlugin<'a> {
             if tokens[i].chars().next().map(|ch| ch.is_ascii_alphabetic()).unwrap_or(false) {
               break;
             }
-            out.push_str(&tokens[i]);
+            out.push_str(tokens[i]);
             i += 1;
             if i < tokens.len()
               && !tokens[i].chars().next().map(|ch| ch.is_ascii_alphabetic()).unwrap_or(false)

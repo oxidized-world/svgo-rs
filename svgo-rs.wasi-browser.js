@@ -57,4 +57,6 @@ const {
 })
 export default __napiModule.exports
 export const optimize = __napiModule.exports.optimize
+export const optimizeBatch = __napiModule.exports.optimizeBatch
 export const optimizeWithPlugins = __napiModule.exports.optimizeWithPlugins
+export const optimizeWithPluginsBatch = __napiModule.exports.optimizeWithPluginsBatch

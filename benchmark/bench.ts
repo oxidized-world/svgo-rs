@@ -1,9 +1,22 @@
 import { Bench } from "tinybench";
 
-import { optimize as optimizeRs } from "../index.js";
+import {
+  optimize as optimizeRs,
+  optimizeBatch,
+  optimizeWithPlugins,
+  optimizeWithPluginsBatch,
+} from "../index.js";
 import { optimize } from "svgo";
 
-const b = new Bench();
+const DEFAULT_PLUGINS = [
+  "removeDesc",
+  "removeDoctype",
+  "removeTitle",
+  "moveElemsAttrsToGroup",
+  "removeComments",
+  "removeMetadata",
+  "removeXMLProcInst",
+];
 
 const inputXml = `
 <svg width="297" height="38" viewBox="0 0 297 38" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -30,25 +43,203 @@ const inputXml = `
 </svg>
 `;
 
-b.add("Javascript optimize", () => {
-  optimize(inputXml, {
-    plugins: [
-      "removeDesc",
-      "removeDoctype",
-      "removeTitle",
-      "moveElemsAttrsToGroup",
-      "removeComments",
-      "removeMetadata",
-      "removeXMLProcInst",
-    ],
+const svgInner = inputXml
+  .trim()
+  .replace(/^<svg[^>]*>/, "")
+  .replace(/<\/svg>$/, "");
+
+const createSvg = (repeat: number) =>
+  `<svg width="297" height="38" viewBox="0 0 297 38" fill="none" xmlns="http://www.w3.org/2000/svg">${svgInner.repeat(repeat)}</svg>`;
+
+type BenchmarkCase = {
+  name: string;
+  input: string;
+  plugins?: string[];
+};
+
+const cases: BenchmarkCase[] = [
+  {
+    name: "S-无插件(1x)",
+    input: createSvg(1),
+  },
+  {
+    name: "M-精简插件(1x)",
+    input: createSvg(1),
+    plugins: DEFAULT_PLUGINS,
+  },
+  {
+    name: "L-精简插件(4x)",
+    input: createSvg(4),
+    plugins: DEFAULT_PLUGINS,
+  },
+  {
+    name: "XL-精简插件(12x)",
+    input: createSvg(12),
+    plugins: DEFAULT_PLUGINS,
+  },
+];
+
+const BATCH_SIZE = 64;
+
+type BatchBenchmarkCase = {
+  name: string;
+  inputList: string[];
+  plugins?: string[];
+};
+
+const batchCases: BatchBenchmarkCase[] = [
+  {
+    name: `Batch-1x(${BATCH_SIZE})`,
+    inputList: Array.from({ length: BATCH_SIZE }, () => createSvg(1)),
+  },
+  {
+    name: `Batch-4x(${BATCH_SIZE})`,
+    inputList: Array.from({ length: BATCH_SIZE }, () => createSvg(4)),
+    plugins: DEFAULT_PLUGINS,
+  },
+];
+
+const runNode = (input: string, plugins?: string[]) => {
+  const result = optimize(input, {
+    plugins: (plugins ?? []) as any,
+  }).data;
+  if (!result) {
+    throw new Error("Node optimize 返回空结果");
+  }
+};
+
+const runRust = (input: string, plugins?: string[]) => {
+  const result = plugins ? optimizeWithPlugins(input, { plugins }) : optimizeRs(input);
+  if (!result) {
+    throw new Error("Rust optimize 返回空结果");
+  }
+};
+
+const runNodeBatch = (inputList: string[], plugins?: string[]) => {
+  const outputs = inputList.map((input) =>
+    optimize(input, {
+      plugins: (plugins ?? []) as any,
+    }).data,
+  );
+  if (outputs.some((output) => !output)) {
+    throw new Error("Node batch optimize 存在空结果");
+  }
+};
+
+const runRustBatch = (inputList: string[], plugins?: string[]) => {
+  const outputs = plugins
+    ? optimizeWithPluginsBatch(inputList, { plugins })
+    : optimizeBatch(inputList);
+  if (outputs.length !== inputList.length || outputs.some((output) => !output)) {
+    throw new Error("Rust batch optimize 结果异常");
+  }
+};
+
+const summary: Array<{
+  case: string;
+  "Node.js ops/s": string;
+  "Rust ops/s": string;
+  "Rust 倍率": string;
+}> = [];
+
+const batchSummary: Array<{
+  case: string;
+  "Node.js batch ops/s": string;
+  "Rust batch ops/s": string;
+  "Rust batch 倍率": string;
+}> = [];
+
+const parseOps = (value: unknown): number => {
+  if (typeof value === "number") {
+    return value;
+  }
+  if (typeof value === "string") {
+    const matched = value.match(/[\d.]+/);
+    return matched ? Number(matched[0]) : 0;
+  }
+  return 0;
+};
+
+for (const testCase of cases) {
+  const bench = new Bench({
+    time: 1_000,
+    warmupTime: 300,
   });
-});
 
-b.add("Rust optimize", () => {
-  optimizeRs(inputXml);
-});
+  bench.add(`Node.js | ${testCase.name}`, () => {
+    runNode(testCase.input, testCase.plugins);
+  });
 
-await b.run();
+  bench.add(`Rust | ${testCase.name}`, () => {
+    runRust(testCase.input, testCase.plugins);
+  });
 
-// biome-ignore lint/suspicious/noConsole: output benchmark results
-console.table(b.table());
+  await bench.run();
+
+  const rows = bench.table() as Array<Record<string, unknown>>;
+
+  // biome-ignore lint/suspicious/noConsole: output benchmark results by case
+  console.table(rows);
+
+  const nodeRow = rows.find((row) =>
+    String(row["Task name"] ?? row["Task Name"] ?? "").startsWith("Node.js"),
+  );
+  const rustRow = rows.find((row) =>
+    String(row["Task name"] ?? row["Task Name"] ?? "").startsWith("Rust"),
+  );
+  const nodeHz = parseOps(nodeRow?.["Throughput avg (ops/s)"]);
+  const rustHz = parseOps(rustRow?.["Throughput avg (ops/s)"]);
+  const speedup = nodeHz === 0 ? 0 : rustHz / nodeHz;
+
+  summary.push({
+    case: testCase.name,
+    "Node.js ops/s": nodeHz.toFixed(2),
+    "Rust ops/s": rustHz.toFixed(2),
+    "Rust 倍率": `${speedup.toFixed(2)}x`,
+  });
+}
+
+// biome-ignore lint/suspicious/noConsole: output benchmark summary
+console.table(summary);
+
+for (const testCase of batchCases) {
+  const bench = new Bench({
+    time: 1_000,
+    warmupTime: 300,
+  });
+
+  bench.add(`Node.js Batch | ${testCase.name}`, () => {
+    runNodeBatch(testCase.inputList, testCase.plugins);
+  });
+
+  bench.add(`Rust Batch | ${testCase.name}`, () => {
+    runRustBatch(testCase.inputList, testCase.plugins);
+  });
+
+  await bench.run();
+
+  const rows = bench.table() as Array<Record<string, unknown>>;
+
+  // biome-ignore lint/suspicious/noConsole: output batch benchmark results by case
+  console.table(rows);
+
+  const nodeRow = rows.find((row) =>
+    String(row["Task name"] ?? row["Task Name"] ?? "").startsWith("Node.js Batch"),
+  );
+  const rustRow = rows.find((row) =>
+    String(row["Task name"] ?? row["Task Name"] ?? "").startsWith("Rust Batch"),
+  );
+  const nodeHz = parseOps(nodeRow?.["Throughput avg (ops/s)"]);
+  const rustHz = parseOps(rustRow?.["Throughput avg (ops/s)"]);
+  const speedup = nodeHz === 0 ? 0 : rustHz / nodeHz;
+
+  batchSummary.push({
+    case: testCase.name,
+    "Node.js batch ops/s": nodeHz.toFixed(2),
+    "Rust batch ops/s": rustHz.toFixed(2),
+    "Rust batch 倍率": `${speedup.toFixed(2)}x`,
+  });
+}
+
+// biome-ignore lint/suspicious/noConsole: output batch benchmark summary
+console.table(batchSummary);

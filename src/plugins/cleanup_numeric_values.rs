@@ -63,18 +63,83 @@ impl<'a> CleanupNumericValuesPlugin<'a> {
     }
   }
 
+  fn split_numeric_and_unit(value: &str) -> Option<(&str, &str)> {
+    let bytes = value.as_bytes();
+    let len = bytes.len();
+    if len == 0 {
+      return None;
+    }
+
+    let mut i = 0;
+    if matches!(bytes[i], b'+' | b'-') {
+      i += 1;
+      if i >= len {
+        return None;
+      }
+    }
+
+    let mut has_digit = false;
+    while i < len && bytes[i].is_ascii_digit() {
+      i += 1;
+      has_digit = true;
+    }
+
+    if i < len && bytes[i] == b'.' {
+      i += 1;
+      while i < len && bytes[i].is_ascii_digit() {
+        i += 1;
+        has_digit = true;
+      }
+    }
+
+    if !has_digit {
+      return None;
+    }
+
+    if i < len && matches!(bytes[i], b'e' | b'E') {
+      i += 1;
+      if i < len && matches!(bytes[i], b'+' | b'-') {
+        i += 1;
+      }
+
+      let exp_start = i;
+      while i < len && bytes[i].is_ascii_digit() {
+        i += 1;
+      }
+      if exp_start == i {
+        return None;
+      }
+    }
+
+    let unit = &value[i..];
+    match unit {
+      "" | "px" | "pt" | "pc" | "mm" | "cm" | "m" | "in" | "ft" | "em" | "ex" | "%" => {
+        Some((&value[..i], unit))
+      }
+      _ => None,
+    }
+  }
+
   fn transform_numeric_token(&self, original: &str) -> Option<String> {
-    let caps = self.reg_numeric_values.captures(original)?;
-    let num_raw = caps.get(1)?.as_str();
-    let mut units = caps.get(2).map(|m| m.as_str()).unwrap_or("").to_string();
-    let mut num = self.round_to_precision(num_raw.parse::<f64>().ok()?);
+    let (num_raw, mut units) = if let Some((num, unit)) = Self::split_numeric_and_unit(original) {
+      (num, unit)
+    } else {
+      let caps = self.reg_numeric_values.captures(original)?;
+      (
+        caps.get(1)?.as_str(),
+        caps.get(2).map(|m| m.as_str()).unwrap_or(""),
+      )
+    };
+
+    let parsed_num = num_raw.parse::<f64>().ok()?;
+    let mut num = self.round_to_precision(parsed_num);
 
     if self.convert_to_px {
       if let Some(ratio) = Self::absolute_length_ratio(&units) {
-        let px_num = self.round_to_precision(ratio * num_raw.parse::<f64>().ok()?);
+        let px_num = self.round_to_precision(ratio * parsed_num);
         if px_num.to_string().len() < original.len() {
           num = px_num;
-          units = "px".to_string();
+          units = "px";
         }
       }
     }
@@ -86,7 +151,7 @@ impl<'a> CleanupNumericValuesPlugin<'a> {
     };
 
     if self.default_px && units == "px" {
-      units.clear();
+      units = "";
     }
 
     str_num.push_str(&units);

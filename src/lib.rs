@@ -4,7 +4,10 @@ mod plugins;
 
 use bumpalo::Bump;
 use napi_derive::napi;
-use optimizer::{Plugin, SvgOptimizer};
+use optimizer::{
+  Plugin, PluginEntry, SvgOptimizer, HOOK_COMMENT_ENTER, HOOK_DECL_ENTER, HOOK_DOCTYPE_ENTER,
+  HOOK_ELEMENT_ENTER, HOOK_ELEMENT_EXIT, HOOK_ROOT_ENTER,
+};
 use parser::parse_svg;
 use plugins::add_attributes_to_svg_element::{
   AddAttributesToSVGElementPlugin, AddAttributesToSVGElementPluginConfig, AttributeSpec,
@@ -91,7 +94,70 @@ use plugins::remove_xmlns::{RemoveXMLNSPlugin, RemoveXMLNSPluginConfig};
 use plugins::reuse_paths::{ReusePathsPlugin, ReusePathsPluginConfig};
 use plugins::sort_attrs::{SortAttrsPlugin, SortAttrsPluginConfig};
 use plugins::sort_defs_children::{SortDefsChildrenPlugin, SortDefsChildrenPluginConfig};
+use rayon::prelude::*;
 use regex::Regex;
+
+fn optimize_default_internal(input_xml: &str) -> napi::Result<String> {
+  let arena = Bump::new();
+  let mut root = parse_svg(input_xml, &arena)
+    .map_err(|e| napi::Error::from_reason(format!("parse svg failed: {e}")))?;
+  let mut optimizer = SvgOptimizer::new_with_entries(vec![
+    PluginEntry::with_hooks(
+      Box::new(RemoveDescPlugin::new(
+        RemoveDescPluginConfig { remove_any: false },
+        &arena,
+      )),
+      HOOK_ELEMENT_ENTER,
+    ),
+    PluginEntry::with_hooks(
+      Box::new(RemoveDoctypePlugin::new(
+        RemoveDoctypePluginConfig {},
+        &arena,
+      )),
+      HOOK_DOCTYPE_ENTER,
+    ),
+    PluginEntry::with_hooks(
+      Box::new(RemoveCommentsPlugin::new(
+        RemoveCommentsConfig {
+          preserve_patterns: None,
+        },
+        &arena,
+      )),
+      HOOK_COMMENT_ENTER,
+    ),
+    PluginEntry::with_hooks(
+      Box::new(RemoveXMLProcInstPlugin::new(
+        RemoveXMLProcInstPluginConfig {},
+        &arena,
+      )),
+      HOOK_DECL_ENTER,
+    ),
+    PluginEntry::with_hooks(
+      Box::new(RemoveMetadataPlugin::new(
+        RemoveMetadataPluginConfig {},
+        &arena,
+      )),
+      HOOK_ELEMENT_ENTER,
+    ),
+    PluginEntry::with_hooks(
+      Box::new(MoveElemsAttrsToGroupPlugin::new(
+        MoveElemsAttrsToGroupPluginConfig {},
+        &arena,
+      )),
+      HOOK_ROOT_ENTER | HOOK_ELEMENT_EXIT,
+    ),
+    PluginEntry::with_hooks(
+      Box::new(RemoveEditorsNSData::new(
+        RemoveEditorsNSDataConfig {
+          additional_namespace: None,
+        },
+        &arena,
+      )),
+      HOOK_ELEMENT_ENTER,
+    ),
+  ]);
+  Ok(optimizer.optimize(&mut root))
+}
 
 #[napi]
 pub fn optimize(input_xml: String) -> String {
@@ -99,45 +165,21 @@ pub fn optimize(input_xml: String) -> String {
   if cfg!(debug_assertions) {
     let _ = env_logger::try_init();
   }
-  let arena = Bump::new();
-  let mut root = parse_svg(&input_xml, &arena).unwrap();
-  let mut optimizer = SvgOptimizer::new(vec![
-    Box::new(RemoveDescPlugin::new(
-      RemoveDescPluginConfig { remove_any: false },
-      &arena,
-    )),
-    Box::new(RemoveDoctypePlugin::new(
-      RemoveDoctypePluginConfig {},
-      &arena,
-    )),
-    Box::new(RemoveCommentsPlugin::new(
-      RemoveCommentsConfig {
-        preserve_patterns: None,
-      },
-      &arena,
-    )),
-    Box::new(RemoveXMLProcInstPlugin::new(
-      RemoveXMLProcInstPluginConfig {},
-      &arena,
-    )),
-    Box::new(RemoveMetadataPlugin::new(
-      RemoveMetadataPluginConfig {},
-      &arena,
-    )),
-    Box::new(MoveElemsAttrsToGroupPlugin::new(
-      MoveElemsAttrsToGroupPluginConfig {},
-      &arena,
-    )),
-    Box::new(RemoveEditorsNSData::new(
-      RemoveEditorsNSDataConfig {
-        additional_namespace: None,
-      },
-      &arena,
-    )),
-  ]);
-  optimizer.optimize(&mut root)
+  optimize_default_internal(&input_xml).unwrap_or_else(|e| panic!("optimize failed: {}", e.reason))
 }
 
+#[napi(js_name = "optimizeBatch")]
+pub fn optimize_batch(input_xml_list: Vec<String>) -> napi::Result<Vec<String>> {
+  if cfg!(debug_assertions) {
+    let _ = env_logger::try_init();
+  }
+  input_xml_list
+    .into_par_iter()
+    .map(|input| optimize_default_internal(&input))
+    .collect()
+}
+
+#[derive(Clone)]
 #[napi(object)]
 pub struct OptimizeWithPluginsOptions {
   /// 要运行的插件列表（顺序生效），使用 svgo 的插件名：
@@ -316,6 +358,96 @@ pub fn optimize_with_plugins(
         })
         .collect::<Vec<&str>>()
     });
+
+  let requested_plugins = options.plugins.clone();
+  let is_fast_path = requested_plugins.iter().all(|name| {
+    matches!(
+      name.as_str(),
+      "removeDesc"
+        | "removeDoctype"
+        | "removeComments"
+        | "removeXMLProcInst"
+        | "removeMetadata"
+        | "moveElemsAttrsToGroup"
+        | "removeEditorsNSData"
+        | "removeTitle"
+    )
+  });
+
+  if is_fast_path {
+    let mut plugins: Vec<PluginEntry<'_>> = Vec::with_capacity(requested_plugins.len());
+    for name in requested_plugins {
+      match name.as_str() {
+        "removeDesc" => plugins.push(PluginEntry::with_hooks(
+          Box::new(RemoveDescPlugin::new(
+            RemoveDescPluginConfig {
+              remove_any: remove_desc_remove_any,
+            },
+            &arena,
+          )),
+          HOOK_ELEMENT_ENTER,
+        )),
+        "removeDoctype" => plugins.push(PluginEntry::with_hooks(
+          Box::new(RemoveDoctypePlugin::new(
+            RemoveDoctypePluginConfig {},
+            &arena,
+          )),
+          HOOK_DOCTYPE_ENTER,
+        )),
+        "removeComments" => plugins.push(PluginEntry::with_hooks(
+          Box::new(RemoveCommentsPlugin::new(
+            RemoveCommentsConfig {
+              preserve_patterns: remove_comments_preserve_patterns.clone(),
+            },
+            &arena,
+          )),
+          HOOK_COMMENT_ENTER,
+        )),
+        "removeXMLProcInst" => plugins.push(PluginEntry::with_hooks(
+          Box::new(RemoveXMLProcInstPlugin::new(
+            RemoveXMLProcInstPluginConfig {},
+            &arena,
+          )),
+          HOOK_DECL_ENTER,
+        )),
+        "removeMetadata" => plugins.push(PluginEntry::with_hooks(
+          Box::new(RemoveMetadataPlugin::new(
+            RemoveMetadataPluginConfig {},
+            &arena,
+          )),
+          HOOK_ELEMENT_ENTER,
+        )),
+        "moveElemsAttrsToGroup" => plugins.push(PluginEntry::with_hooks(
+          Box::new(MoveElemsAttrsToGroupPlugin::new(
+            MoveElemsAttrsToGroupPluginConfig {},
+            &arena,
+          )),
+          HOOK_ROOT_ENTER | HOOK_ELEMENT_EXIT,
+        )),
+        "removeEditorsNSData" => plugins.push(PluginEntry::with_hooks(
+          Box::new(RemoveEditorsNSData::new(
+            RemoveEditorsNSDataConfig {
+              additional_namespace: remove_editors_additional.clone(),
+            },
+            &arena,
+          )),
+          HOOK_ELEMENT_ENTER,
+        )),
+        "removeTitle" => plugins.push(PluginEntry::with_hooks(
+          Box::new(RemoveTitlePlugin::new(RemoveTitlePluginConfig {}, &arena)),
+          HOOK_ELEMENT_ENTER,
+        )),
+        _ => {
+          return Err(napi::Error::from_reason(format!(
+            "unknown plugin name: {name}"
+          )))
+        }
+      }
+    }
+
+    let mut optimizer = SvgOptimizer::new_with_entries(plugins);
+    return Ok(optimizer.optimize(&mut root));
+  }
 
   let mut add_attributes_specs: Vec<AttributeSpec<'_>> = Vec::new();
 
@@ -655,7 +787,7 @@ pub fn optimize_with_plugins(
   };
 
   let mut plugins: Vec<Box<dyn Plugin<'_> + '_>> = Vec::new();
-  for name in options.plugins {
+  for name in requested_plugins {
     match name.as_str() {
       "removeDesc" => plugins.push(Box::new(RemoveDescPlugin::new(
         RemoveDescPluginConfig {
@@ -998,4 +1130,18 @@ pub fn optimize_with_plugins(
 
   let mut optimizer = SvgOptimizer::new(plugins);
   Ok(optimizer.optimize(&mut root))
+}
+
+#[napi(js_name = "optimizeWithPluginsBatch")]
+pub fn optimize_with_plugins_batch(
+  input_xml_list: Vec<String>,
+  options: OptimizeWithPluginsOptions,
+) -> napi::Result<Vec<String>> {
+  if cfg!(debug_assertions) {
+    let _ = env_logger::try_init();
+  }
+  input_xml_list
+    .into_par_iter()
+    .map(|input| optimize_with_plugins(input, options.clone()))
+    .collect()
 }

@@ -577,4 +577,6 @@ if (!nativeBinding) {
 
 module.exports = nativeBinding
 module.exports.optimize = nativeBinding.optimize
+module.exports.optimizeBatch = nativeBinding.optimizeBatch
 module.exports.optimizeWithPlugins = nativeBinding.optimizeWithPlugins
+module.exports.optimizeWithPluginsBatch = nativeBinding.optimizeWithPluginsBatch

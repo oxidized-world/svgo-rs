@@ -2,7 +2,11 @@
 /* eslint-disable */
 export declare function optimize(inputXml: string): string
 
+export declare function optimizeBatch(inputXmlList: Array<string>): Array<string>
+
 export declare function optimizeWithPlugins(inputXml: string, options: OptimizeWithPluginsOptions): string
+
+export declare function optimizeWithPluginsBatch(inputXmlList: Array<string>, options: OptimizeWithPluginsOptions): Array<string>
 
 export interface OptimizeWithPluginsOptions {
   /**
