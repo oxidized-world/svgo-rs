@@ -225,11 +225,14 @@ jobs:
         run: ls -R .
         shell: bash
       - name: Test bindings
-        uses: addnab/docker-run-action@v3
-        with:
-          image: ${{ steps.docker.outputs.IMAGE }}
-          options: -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }} --platform ${{ steps.docker.outputs.PLATFORM }}
-          run: yarn test
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:${{ github.workspace }}" \
+            -w "${{ github.workspace }}" \
+            --platform "${{ steps.docker.outputs.PLATFORM }}" \
+            "${{ steps.docker.outputs.IMAGE }}" \
+            sh -lc "yarn test"
+        shell: bash
   test-wasi:
     name: Test WASI target
     needs:
