@@ -1,7 +1,22 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.14/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.8/schema.json",
   "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
-  "files": { "ignoreUnknown": false, "includes": ["**"] },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!**/target",
+      "!**/.yarn",
+      "!**/__test__/fixtures/**",
+      "!**/index.js",
+      "!**/index.d.ts",
+      "!**/browser.js",
+      "!**/svgo-rs.wasi.cjs",
+      "!**/svgo-rs.wasi-browser.js",
+      "!**/wasi-worker.mjs",
+      "!**/wasi-worker-browser.mjs"
+    ]
+  },
   "formatter": {
     "enabled": true,
     "useEditorconfig": true,
@@ -11,14 +26,13 @@
     "lineEnding": "lf",
     "lineWidth": 120,
     "attributePosition": "auto",
-    "bracketSpacing": true,
-    "includes": ["**", "!**/target", "!**/.yarn"]
+    "bracketSpacing": true
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": false,
+      "preset": "none",
       "complexity": { "noUselessConstructor": "off" },
       "correctness": {
         "noConstAssign": "error",
