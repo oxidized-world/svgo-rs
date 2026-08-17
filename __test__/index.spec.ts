@@ -42,6 +42,19 @@ describe('optimize', () => {
     expect(output).toContain('data-mixed=" lead\n  and\ttab  trail "')
   })
 
+  // moveElemsAttrsToGroup must bail out entirely when a <style> element is
+  // present, because hoisting presentation attributes onto the group changes
+  // which element the CSS rules apply to. This used to only hold in debug
+  // builds: the flag was written through a `&self` -> `*mut` cast, and release
+  // builds (which is what gets published) optimised that write away.
+  test('does not hoist attributes when a <style> element is present', () => {
+    const output = optimize(readFixture('style-deopt.svg'))
+
+    expect(output).toContain('<rect fill="red" stroke="blue" width="1" height="1"/>')
+    expect(output).toContain('<circle transform="scale(2)" fill="teal" r="1"/>')
+    expect(output).not.toContain('<g fill="red" stroke="blue">')
+  })
+
   // Comments are opaque in XML: no entity expansion happens inside them, so
   // their content has to be passed through verbatim. This matches svgo (JS).
   test('does not expand entities inside comments', () => {
