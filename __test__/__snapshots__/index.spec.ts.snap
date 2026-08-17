@@ -37,13 +37,22 @@ exports[`optimize > comments.svg 1`] = `
   <!--!
     multi-line preserved comment
   -->
-  <!--! preserved with entity: Tom & Jerry and 3 < 5 -->
+  <!--! preserved with entity: Tom &amp; Jerry and 3 &lt; 5 -->
   <rect width="10" height="10"/>
   <g>
     
     <!--! nested preserved comment -->
     <circle cx="5" cy="5" r="2"/>
   </g>
+</svg>
+"
+`;
+
+exports[`optimize > comments-raw-amp.svg 1`] = `
+"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!--! preserved with raw markup: a < b & c -->
+  
+  <rect width="10" height="10"/>
 </svg>
 "
 `;
@@ -242,6 +251,17 @@ exports[`optimize > style-deopt.svg 1`] = `
     <circle transform="scale(2)" fill="teal" r="1"/>
     <circle transform="scale(2)" fill="teal" r="2"/>
   </g>
+</svg>
+"
+`;
+
+exports[`optimize > unknown-entity.svg 1`] = `
+"
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <text x="0" y="10">&customEntity;</text>
+  <text x="0" y="20">mixed & and &anotherUnknown; here</text>
+  <rect width="10" height="10" data-attr="plain"/>
 </svg>
 "
 `;

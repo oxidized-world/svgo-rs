@@ -19,7 +19,7 @@ log         = "0.4.33"
 napi        = "3.12.1"
 napi-derive = "3.6.3"
 phf         = { version = "0.14.0", features = ["macros"] }
-quick-xml   = "0.37.3"
+quick-xml   = "0.41.0"
 regex       = "1.13.1"
 
 [build-dependencies]

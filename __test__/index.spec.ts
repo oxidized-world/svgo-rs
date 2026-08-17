@@ -41,4 +41,29 @@ describe('optimize', () => {
     expect(output).toContain('points="0,0\n1,1\n2,0"')
     expect(output).toContain('data-mixed=" lead\n  and\ttab  trail "')
   })
+
+  // Comments are opaque in XML: no entity expansion happens inside them, so
+  // their content has to be passed through verbatim. This matches svgo (JS).
+  test('does not expand entities inside comments', () => {
+    const output = optimize(readFixture('comments.svg'))
+
+    expect(output).toContain('<!--! preserved with entity: Tom &amp; Jerry and 3 &lt; 5 -->')
+  })
+
+  // Raw `&` and `<` inside a comment used to make the parser fail, which
+  // aborted the whole Node process instead of throwing.
+  test('accepts raw markup inside comments', () => {
+    const output = optimize(readFixture('comments-raw-amp.svg'))
+
+    expect(output).toContain('<!--! preserved with raw markup: a < b & c -->')
+  })
+
+  // Unknown entities (e.g. declared in a DTD internal subset) are kept as
+  // written. This used to abort the whole Node process as well.
+  test('keeps unknown entity references as-is', () => {
+    const output = optimize(readFixture('unknown-entity.svg'))
+
+    expect(output).toContain('&customEntity;')
+    expect(output).toContain('&anotherUnknown;')
+  })
 })

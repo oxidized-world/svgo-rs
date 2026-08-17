@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!--! preserved with raw markup: a < b & c -->
+  <!-- removed with raw markup: x & y -->
+  <rect width="10" height="10"/>
+</svg>
