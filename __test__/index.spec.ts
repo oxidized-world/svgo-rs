@@ -1,36 +1,44 @@
-import { expect, test } from "vitest";
-import { optimize } from "../index";
+import { readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-test("sync function from native code", () => {
-  const inputXml = `
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="100px" height="100px" viewBox="0 0 100 100"
-     xmlns="http://www.w3.org/2000/svg"
-     xmlns:xlink="http://www.w3.org/1999/xlink"
-     xmlns:myeditor="http://www.myeditor.com/ns"
-     version="1.1">
-    <myeditor:metadata>
-        <myeditor:source>AwesomeIcon Design</myeditor:source>
-        <myeditor:version>1.2</myeditor:version>
-        <myeditor:exporter>MyEditor Pro Exporter v3.0</myeditor:exporter>
-    </myeditor:metadata>
-    <title>My Awesome Icon</title>
-    <desc>A blue circle with a red star inside.</desc>
-    <g id="BackgroundLayer" myeditor:layerName="Background">
-        <circle cx="50" cy="50" r="45" fill="blue" id="blue_circle_bg" myeditor:objectID="obj123"/>
-    </g>
-    <g id="ForegroundLayer" myeditor:layerName="Foreground" myeditor:isDecorative="false">
-        <polygon points="50,15 61,35 85,35 67,50 73,70 50,60 27,70 33,50 15,35 39,35"
-                 fill="red"
-                 id="red_star_shape"
-                 myeditor:objectID="obj456"
-                 myeditor:customAttribute="important_shape"/>
-    </g>
-</svg>
-`;
+import { describe, expect, test } from 'vitest'
 
-  const res = optimize(inputXml);
-  // biome-ignore lint/suspicious/noConsole: debug output in test
-  console.log(res);
-  expect(1).toBe(1);
-});
+import { optimize } from '../index'
+
+const fixturesDir = fileURLToPath(new URL('./fixtures', import.meta.url))
+
+const readFixture = (name: string) => readFileSync(join(fixturesDir, name), 'utf8')
+
+const fixtures = readdirSync(fixturesDir)
+  .filter((name) => name.endsWith('.svg'))
+  .sort()
+
+describe('optimize', () => {
+  test('there are fixtures to run', () => {
+    expect(fixtures.length).toBeGreaterThan(0)
+  })
+
+  // Every fixture output is snapshotted so that any change in behaviour (for
+  // example while upgrading dependencies) shows up as an explicit diff.
+  test.each(fixtures)('%s', (name) => {
+    const output = optimize(readFixture(name))
+
+    expect(typeof output).toBe('string')
+    expect(output).toContain('<svg')
+    expect(output).toMatchSnapshot()
+  })
+
+  // Snapshot serialisation rewrites `\r` to `\n`, so raw whitespace inside
+  // attribute values needs an explicit byte level assertion. XML attribute
+  // value normalisation (tab/CR/LF -> space) is deliberately NOT applied, to
+  // keep the value exactly as it was written in the source document.
+  test('keeps raw whitespace inside attribute values', () => {
+    const output = optimize(readFixture('multiline-attr.svg'))
+
+    expect(output).toContain('data-tab="a\tb"')
+    expect(output).toContain('data-cr="x\ry"')
+    expect(output).toContain('points="0,0\n1,1\n2,0"')
+    expect(output).toContain('data-mixed=" lead\n  and\ttab  trail "')
+  })
+})

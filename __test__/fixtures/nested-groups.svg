@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad">
+      <stop offset="0" stop-color="red"/>
+      <stop offset="1" stop-color="blue"/>
+    </linearGradient>
+  </defs>
+  <g id="outer">
+    <g id="middle">
+      <g id="inner">
+        <path d="M0 0 L1 1"/>
+        <path d="M2 2 L3 3"/>
+      </g>
+      <use href="#inner"/>
+    </g>
+    <g id="empty"></g>
+    <g id="self-closed"/>
+  </g>
+  <g>
+    <desc>should be removed</desc>
+    <title>should be removed</title>
+    <metadata>should be removed</metadata>
+    <rect width="10" height="10"/>
+  </g>
+</svg>

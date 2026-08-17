@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <g attr1="val1">
+    <g fill="red" stroke="blue">
+      text
+    </g>
+    <circle fill="red" stroke="blue" r="5"/>
+  </g>
+  <g>
+    <rect fill="green" width="1" height="1"/>
+    <rect fill="green" width="2" height="2"/>
+    <rect fill="yellow" width="3" height="3"/>
+  </g>
+  <g fill="red">
+    <rect fill="red" width="1" height="1"/>
+    <rect fill="red" width="2" height="2"/>
+  </g>
+  <g>
+    <rect width="1" height="1"/>
+  </g>
+  <g>
+    <rect font-size="10" letter-spacing="2" width="1" height="1"/>
+    <rect font-size="10" letter-spacing="2" width="2" height="2"/>
+  </g>
+</svg>

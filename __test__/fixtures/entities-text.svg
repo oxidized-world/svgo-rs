@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100">
+  <text x="10" y="20">Tom &amp; Jerry</text>
+  <text x="10" y="40">3 &lt; 5 &gt; 1</text>
+  <text x="10" y="60">&quot;quoted&quot; and &apos;single&apos;</text>
+  <text x="10" y="80">decimal &#65; hex &#x42; mixed &#38;</text>
+  <text x="10" y="100">leading &amp; trailing &amp;</text>
+  <text x="10" y="120">&amp;&amp;&amp;</text>
+  <text x="10" y="140">&amp;</text>
+</svg>

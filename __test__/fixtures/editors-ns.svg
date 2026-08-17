@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
+   xmlns:figma="http://www.figma.com/figma/ns"
+   xmlns:ai="http://ns.adobe.com/AdobeIllustrator/10.0/"
+   xmlns:unknownvendor="http://example.com/not-in-the-list"
+   width="100"
+   height="100"
+   viewBox="0 0 100 100"
+   sodipodi:docname="drawing.svg"
+   inkscape:version="1.0"
+   unknownvendor:keepme="yes">
+  <sodipodi:namedview
+     inkscape:zoom="1"
+     inkscape:cx="50"
+     inkscape:cy="50"
+     inkscape:window-width="1920"/>
+  <metadata id="metadata7">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <inkscape:grid type="xygrid"/>
+  <sketch:layer name="Layer 1"/>
+  <figma:frame name="Frame 1"/>
+  <ai:layer name="Layer 2"/>
+  <unknownvendor:thing keep="1"/>
+  <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1" unknownvendor:attr="v">
+    <rect width="10" height="10" sodipodi:role="line" fill="red"/>
+    <rect width="10" height="10" inkscape:connector-curvature="0" fill="red"/>
+  </g>
+</svg>

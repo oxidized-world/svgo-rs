@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <style><![CDATA[
+    .cls { fill: red; stroke: blue; }
+    .a > .b { fill: green; }
+  ]]></style>
+  <text x="0" y="10"><![CDATA[raw < & > text]]></text>
+  <text x="0" y="20">before <![CDATA[in cdata]]> after</text>
+  <rect class="cls" width="10" height="10"/>
+</svg>
