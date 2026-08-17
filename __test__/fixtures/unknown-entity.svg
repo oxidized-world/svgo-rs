@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg [
+  <!ENTITY customEntity "expanded value">
+]>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <text x="0" y="10">&customEntity;</text>
+  <text x="0" y="20">mixed &amp; and &anotherUnknown; here</text>
+  <rect width="10" height="10" data-attr="plain"/>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- a plain comment that should be removed -->
+  <!--! a legal comment that must be preserved -->
+  <!--!
+    multi-line preserved comment
+  -->
+  <!--! preserved with entity: Tom &amp; Jerry and 3 &lt; 5 -->
+  <rect width="10" height="10"/>
+  <g>
+    <!-- nested plain comment -->
+    <!--! nested preserved comment -->
+    <circle cx="5" cy="5" r="2"/>
+  </g>
+</svg>

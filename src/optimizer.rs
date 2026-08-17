@@ -13,7 +13,7 @@ pub enum VisitAction {
 }
 
 pub trait Plugin<'a> {
-  fn root_enter(&self, _el: &mut XMLAstRoot<'a>) {}
+  fn root_enter(&mut self, _el: &mut XMLAstRoot<'a>) {}
   fn root_exit(&self, _el: &mut XMLAstRoot<'a>) {}
 
   /// return true 表示要把这个 element 从父节点里删掉
@@ -63,7 +63,7 @@ impl<'a> SvgOptimizer<'a> {
   }
 
   pub fn optimize(&mut self, root: &mut XMLAstRoot<'a>) -> String {
-    for plugin in &self.plugins {
+    for plugin in &mut self.plugins {
       plugin.root_enter(root);
     }
     // 对根节点的 children 启动遍历
@@ -199,7 +199,7 @@ impl<'a> SvgOptimizer<'a> {
       }
       XMLAstChild::Text(t) => {
         // 文本节点
-        buf.push_str(&t.value);
+        buf.push_str(t.value);
       }
       XMLAstChild::Comment(c) => {
         // 注释

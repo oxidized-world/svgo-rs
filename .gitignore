@@ -119,6 +119,7 @@ dist
 /target
 
 *.node
+*.wasm
 .pnp.*
 .yarn/*
 !.yarn/patches

@@ -1,26 +1,29 @@
 [package]
-authors    = ["Jacob <jacob.lcs@qq.com>"]
-edition    = "2021"
-license    = "MIT"
-name       = "svgo-rs"
-repository = "https://github.com/oxidized-world/svgo-rs"
-version    = "0.1.0"
+authors = ["Jacob <jacob.lcs@qq.com>"]
+# 保持 2021：napi-derive 会为 wasm target 生成裸 `#[no_mangle]`，
+# 在 edition 2024 下它是硬错误，会让 wasm32-wasip1-threads 构建失败。
+edition      = "2021"
+license      = "MIT"
+name         = "svgo-rs"
+repository   = "https://github.com/oxidized-world/svgo-rs"
+rust-version = "1.88"
+version      = "0.1.0"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-bumpalo     = { version = "3.17.0", features = ["collections"] }
-env_logger  = "0.11.8"
-log         = "0.4.27"
-napi        = "3.8.2"
-napi-derive = "3.5.1"
-phf         = { version = "0.12.1", features = ["macros"] }
-quick-xml   = "0.37.3"
-regex       = "1.11.1"
+bumpalo     = { version = "3.20.3", features = ["collections"] }
+env_logger  = "0.11.11"
+log         = "0.4.33"
+napi        = "3.12.1"
+napi-derive = "3.6.3"
+phf         = { version = "0.14.0", features = ["macros"] }
+quick-xml   = "0.41.0"
+regex       = "1.13.1"
 
 [build-dependencies]
-napi-build = "2.3.1"
+napi-build = "2.4.1"
 
 [profile.release]
 lto   = true

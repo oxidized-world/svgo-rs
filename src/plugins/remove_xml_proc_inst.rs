@@ -12,7 +12,7 @@ pub struct RemoveXMLProcInstPluginConfig {}
 
 impl<'a> RemoveXMLProcInstPlugin<'a> {
   pub fn new(_config: RemoveXMLProcInstPluginConfig, arena: &'a Bump) -> Self {
-    RemoveXMLProcInstPlugin { arena: arena }
+    RemoveXMLProcInstPlugin { arena }
   }
 }
 

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <g transform="translate(1 2)">
+    <rect transform="scale(2)" fill="red" width="1" height="1"/>
+    <rect transform="scale(2)" fill="red" width="2" height="2"/>
+  </g>
+  <g>
+    <ellipse transform="scale(3)" fill="blue" rx="1" ry="1"/>
+    <ellipse transform="scale(3)" fill="blue" rx="2" ry="2"/>
+  </g>
+  <g filter="url(#f)">
+    <rect transform="scale(4)" fill="green" width="1" height="1"/>
+    <rect transform="scale(4)" fill="green" width="2" height="2"/>
+  </g>
+  <g clip-path="url(#c)">
+    <rect transform="scale(5)" fill="teal" width="1" height="1"/>
+    <rect transform="scale(5)" fill="teal" width="2" height="2"/>
+  </g>
+  <g mask="url(#m)">
+    <rect transform="scale(6)" fill="olive" width="1" height="1"/>
+    <rect transform="scale(6)" fill="olive" width="2" height="2"/>
+  </g>
+</svg>

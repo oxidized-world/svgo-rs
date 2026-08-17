@@ -1,5 +1,6 @@
 use bumpalo::collections::Vec as BumpVec;
 use bumpalo::Bump;
+use quick_xml::escape::{resolve_predefined_entity, unescape};
 use quick_xml::events::attributes::Attributes;
 use quick_xml::events::BytesText;
 use quick_xml::events::Event;
@@ -91,7 +92,11 @@ fn parse_attributes<'a>(
     let attr = attr_result?;
     let cow = reader.decoder().decode(attr.key.as_ref())?;
     let key: &str = arena.alloc_str(&cow);
-    let raw_val = attr.unescape_value()?;
+    // 这里不用 `Attribute::unescape_value()`：quick-xml 0.40 起它已被废弃，
+    // 且行为改成了按 XML 规范做属性值归一化，会把值里的 \t \r \n 替换成空格。
+    // 手动 decode + unescape 才能让属性值保持源文档里的原始样子。
+    let decoded = reader.decoder().decode(&attr.value)?;
+    let raw_val = unescape(&decoded)?;
     let value = arena.alloc_str(&raw_val);
     attrs_vec.push((key, &*value));
   }
@@ -108,14 +113,40 @@ fn decode_bytes<'arena>(
   Ok(arena.alloc_str(&cow))
 }
 
-/// 解码包含转义字符的文本内容并在 arena 中分配
-fn decode_escaped<'arena>(
+/// 解码文本 / 注释内容并在 arena 中分配
+///
+/// quick-xml 0.38 起 `BytesText::unescape()` 已被移除：文本里的实体引用不再
+/// 内联在 `Event::Text` 里，而是作为独立的 `Event::GeneralRef` 事件返回，
+/// 因此这里只需要解码，反转义由 `Event::GeneralRef` 分支负责。
+fn decode_text<'arena>(
   bytes_text: &BytesText,
-  _reader: &Reader<&[u8]>,
   arena: &'arena Bump,
 ) -> Result<&'arena str, Box<dyn Error>> {
-  let cow = bytes_text.unescape()?;
+  let cow = bytes_text.decode()?;
   Ok(arena.alloc_str(&cow))
+}
+
+/// 把一段文本追加到当前父元素（栈顶）或根节点的子节点列表
+///
+/// 如果最后一个子节点已经是文本节点，则就地合并。这样一来，被
+/// `Event::GeneralRef` 切分成多个事件的同一段文本，最终仍然只对应一个
+/// 文本节点，AST 形状与 quick-xml 0.38 之前保持一致。
+fn push_text<'arena>(
+  parent_stack: &mut [XMLAstElement<'arena>],
+  root: &mut XMLAstRoot<'arena>,
+  value: &'arena str,
+  arena: &'arena Bump,
+) {
+  let children = match parent_stack.last_mut() {
+    Some(parent) => &mut parent.children,
+    None => &mut root.children,
+  };
+  if let Some(XMLAstChild::Text(last)) = children.last_mut() {
+    let merged = bumpalo::format!(in arena, "{}{}", last.value, value).into_bump_str();
+    last.value = merged;
+    return;
+  }
+  children.push(XMLAstChild::Text(XMLAstText { value }));
 }
 
 pub fn parse_svg<'arena>(
@@ -187,18 +218,34 @@ pub fn parse_svg<'arena>(
       }
       // --- 文本节点 ---
       Ok(Event::Text(e)) => {
-        let value = decode_escaped(&e, &reader, arena)?;
-        let text_node = XMLAstChild::Text(XMLAstText { value });
-        // 添加到当前父元素（栈顶）或根节点
-        if let Some(parent) = parent_stack.last_mut() {
-          parent.children.push(text_node);
-        } else {
-          root.children.push(text_node);
-        }
+        let value = decode_text(&e, arena)?;
+        push_text(&mut parent_stack, &mut root, value, arena);
+      }
+      // --- 实体 / 字符引用 &amp; &#65; ---
+      // quick-xml 0.38 起，文本中的引用不再包含在 Text 事件里，而是单独作为
+      // GeneralRef 事件返回，需要自己解析后拼回文本节点。
+      Ok(Event::GeneralRef(e)) => {
+        let raw = decode_bytes(e.as_ref(), &reader, arena)?;
+        let resolved: &str = match e.resolve_char_ref()? {
+          // 字符引用：&#65; / &#x41;
+          Some(ch) => {
+            let mut buf = [0u8; 4];
+            arena.alloc_str(ch.encode_utf8(&mut buf))
+          }
+          None => match resolve_predefined_entity(raw) {
+            // 预定义实体：&amp; &lt; &gt; &quot; &apos;
+            Some(text) => text,
+            // 未知实体（例如自定义 DTD 实体）原样保留。
+            // 旧版本这里会直接报错，并在 lib.rs 的 unwrap 处 panic。
+            None => bumpalo::format!(in arena, "&{};", raw).into_bump_str(),
+          },
+        };
+        push_text(&mut parent_stack, &mut root, resolved, arena);
       }
       // --- 注释 ---
       Ok(Event::Comment(e)) => {
-        let value = decode_escaped(&e, &reader, arena)?;
+        // 注释内部不做实体展开，所以这里只解码、不反转义
+        let value = decode_text(&e, arena)?;
         let comment_node = XMLAstChild::Comment(XMLAstComment { value });
         if let Some(parent) = parent_stack.last_mut() {
           parent.children.push(comment_node);

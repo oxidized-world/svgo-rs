@@ -35,7 +35,7 @@ impl<'a> MoveElemsAttrsToGroupPlugin<'a> {
   pub fn new(_config: MoveElemsAttrsToGroupPluginConfig, arena: &'a Bump) -> Self {
     MoveElemsAttrsToGroupPlugin {
       has_style_element: false,
-      arena: arena,
+      arena,
     }
   }
 }
@@ -101,21 +101,19 @@ static PATH_ELEMS: Set<&'static str> = phf_set! {
 };
 
 impl<'a> Plugin<'a> for MoveElemsAttrsToGroupPlugin<'a> {
-  fn root_enter(&self, _el: &mut crate::parser::XMLAstRoot<'a>) {
+  fn root_enter(&mut self, _el: &mut crate::parser::XMLAstRoot<'a>) {
     let mut element_stack: Vec<&XMLAstChild<'a>> = Vec::new();
     for child in _el.children.iter() {
       element_stack.push(child);
     }
     let mut i = 0;
+    let mut has_style_element = false;
     while i < element_stack.len() {
       let element = &element_stack[i];
       match element {
         XMLAstChild::Element(_el) => {
           if _el.name == "style" {
-            let this = self as *const _ as *mut MoveElemsAttrsToGroupPlugin;
-            unsafe {
-              (*this).has_style_element = true;
-            }
+            has_style_element = true;
             break;
           } else {
             for child in _el.children.iter() {
@@ -127,6 +125,7 @@ impl<'a> Plugin<'a> for MoveElemsAttrsToGroupPlugin<'a> {
         _ => i += 1,
       }
     }
+    self.has_style_element = has_style_element;
   }
 
   fn element_exit(&self, el: &mut XMLAstElement<'a>) {
