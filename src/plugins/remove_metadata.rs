@@ -12,7 +12,7 @@ pub struct RemoveMetadataPluginConfig {}
 
 impl<'a> RemoveMetadataPlugin<'a> {
   pub fn new(_config: RemoveMetadataPluginConfig, arena: &'a Bump) -> Self {
-    RemoveMetadataPlugin { arena: arena }
+    RemoveMetadataPlugin { arena }
   }
 }
 

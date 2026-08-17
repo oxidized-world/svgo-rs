@@ -35,7 +35,7 @@ impl<'a> MoveElemsAttrsToGroupPlugin<'a> {
   pub fn new(_config: MoveElemsAttrsToGroupPluginConfig, arena: &'a Bump) -> Self {
     MoveElemsAttrsToGroupPlugin {
       has_style_element: false,
-      arena: arena,
+      arena,
     }
   }
 }
